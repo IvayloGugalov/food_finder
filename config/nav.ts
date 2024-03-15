@@ -26,6 +26,11 @@ export const additionalLinks: AdditionalLinks[] = [
         title: "Supermarkets",
         icon: Globe,
       },
+      {
+        href: "/call-api",
+        title: "Generate all",
+        icon: Globe,
+      },
     ],
   },
 

@@ -1,13 +1,13 @@
 import { db } from "@/lib/db/index";
 import { and, eq } from "drizzle-orm";
-import { 
-  SupermarketId, 
+import {
+  SupermarketId,
   NewSupermarketParams,
-  UpdateSupermarketParams, 
+  UpdateSupermarketParams,
   updateSupermarketSchema,
-  insertSupermarketSchema, 
+  insertSupermarketSchema,
   supermarkets,
-  supermarketIdSchema 
+  supermarketIdSchema
 } from "@/lib/db/schema/supermarkets";
 import { getUserAuth } from "@/lib/auth/utils";
 
