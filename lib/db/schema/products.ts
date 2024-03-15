@@ -24,7 +24,6 @@ export const products = pgTable(
     supermarketId: varchar('supermarket_id', { length: 256 })
       .references(() => supermarkets.id, { onDelete: 'cascade' })
       .notNull(),
-    userId: varchar('user_id', { length: 256 }).notNull(),
 
     createdAt: timestamp('created_at')
       .notNull()
@@ -54,21 +53,17 @@ export const insertProductParams = baseSchema
   })
   .omit({
     id: true,
-    userId: true,
   })
 
 export const updateProductSchema = baseSchema
-export const updateProductParams = baseSchema
-  .extend({
-    price: z.coerce.number(),
-    oldPrice: z.coerce.number(),
-    validFrom: z.coerce.string().min(1),
-    validUntil: z.coerce.string().min(1),
-    supermarketId: z.coerce.string().min(1),
-  })
-  .omit({
-    userId: true,
-  })
+export const updateProductParams = baseSchema.extend({
+  price: z.coerce.number(),
+  oldPrice: z.coerce.number(),
+  validFrom: z.coerce.string().min(1),
+  validUntil: z.coerce.string().min(1),
+  supermarketId: z.coerce.string().min(1),
+})
+
 export const productIdSchema = baseSchema.pick({ id: true })
 
 // Types for products - used to type API request params and within Components

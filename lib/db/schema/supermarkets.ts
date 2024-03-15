@@ -14,7 +14,6 @@ export const supermarkets = pgTable(
       .primaryKey()
       .$defaultFn(() => nanoid()),
     name: varchar('name', { length: 256 }).notNull(),
-    userId: varchar('user_id', { length: 256 }).notNull(),
 
     createdAt: timestamp('created_at')
       .notNull()
@@ -36,13 +35,10 @@ const baseSchema = createSelectSchema(supermarkets).omit(timestamps)
 export const insertSupermarketSchema = createInsertSchema(supermarkets).omit(timestamps)
 export const insertSupermarketParams = baseSchema.extend({}).omit({
   id: true,
-  userId: true,
 })
 
 export const updateSupermarketSchema = baseSchema
-export const updateSupermarketParams = baseSchema.extend({}).omit({
-  userId: true,
-})
+export const updateSupermarketParams = baseSchema.extend({})
 export const supermarketIdSchema = baseSchema.pick({ id: true })
 
 // Types for supermarkets - used to type API request params and within Components

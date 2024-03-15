@@ -1,58 +1,55 @@
-import { db } from "@/lib/db/index";
-import { and, eq } from "drizzle-orm";
-import { 
-  ProductId, 
+import { db } from '@/lib/db/index'
+import { and, eq } from 'drizzle-orm'
+import {
+  ProductId,
   NewProductParams,
-  UpdateProductParams, 
+  UpdateProductParams,
   updateProductSchema,
-  insertProductSchema, 
+  insertProductSchema,
   products,
-  productIdSchema 
-} from "@/lib/db/schema/products";
-import { getUserAuth } from "@/lib/auth/utils";
+  productIdSchema,
+} from '@/lib/db/schema/products'
 
 export const createProduct = async (product: NewProductParams) => {
-  const { session } = await getUserAuth();
-  const newProduct = insertProductSchema.parse({ ...product, userId: session?.user.id! });
+  const newProduct = insertProductSchema.parse(product)
   try {
-    const [p] =  await db.insert(products).values(newProduct).returning();
-    return { product: p };
+    const [p] = await db.insert(products).values(newProduct).returning()
+    return { product: p }
   } catch (err) {
-    const message = (err as Error).message ?? "Error, please try again";
-    console.error(message);
-    throw { error: message };
+    const message = (err as Error).message ?? 'Error, please try again'
+    console.error(message)
+    throw { error: message }
   }
-};
+}
 
 export const updateProduct = async (id: ProductId, product: UpdateProductParams) => {
-  const { session } = await getUserAuth();
-  const { id: productId } = productIdSchema.parse({ id });
-  const newProduct = updateProductSchema.parse({ ...product, userId: session?.user.id! });
+  const { id: productId } = productIdSchema.parse({ id })
+  const newProduct = updateProductSchema.parse(product)
   try {
-    const [p] =  await db
-     .update(products)
-     .set({...newProduct, updatedAt: new Date() })
-     .where(and(eq(products.id, productId!), eq(products.userId, session?.user.id!)))
-     .returning();
-    return { product: p };
+    const [p] = await db
+      .update(products)
+      .set({ ...newProduct, updatedAt: new Date() })
+      .where(and(eq(products.id, productId!)))
+      .returning()
+    return { product: p }
   } catch (err) {
-    const message = (err as Error).message ?? "Error, please try again";
-    console.error(message);
-    throw { error: message };
+    const message = (err as Error).message ?? 'Error, please try again'
+    console.error(message)
+    throw { error: message }
   }
-};
+}
 
 export const deleteProduct = async (id: ProductId) => {
-  const { session } = await getUserAuth();
-  const { id: productId } = productIdSchema.parse({ id });
+  const { id: productId } = productIdSchema.parse({ id })
   try {
-    const [p] =  await db.delete(products).where(and(eq(products.id, productId!), eq(products.userId, session?.user.id!)))
-    .returning();
-    return { product: p };
+    const [p] = await db
+      .delete(products)
+      .where(and(eq(products.id, productId!)))
+      .returning()
+    return { product: p }
   } catch (err) {
-    const message = (err as Error).message ?? "Error, please try again";
-    console.error(message);
-    throw { error: message };
+    const message = (err as Error).message ?? 'Error, please try again'
+    console.error(message)
+    throw { error: message }
   }
-};
-
+}

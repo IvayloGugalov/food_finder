@@ -105,7 +105,6 @@ const ProductForm = ({
       updatedAt: product?.updatedAt ?? new Date(),
       createdAt: product?.createdAt ?? new Date(),
       id: product?.id ?? "",
-      userId: product?.userId ?? "",
       ...values,
     };
     try {
@@ -121,7 +120,7 @@ const ProductForm = ({
 
         const errorFormatted = {
           error: error ?? "Error",
-          values: pendingProduct 
+          values: pendingProduct
         };
         onSuccess(
           editing ? "update" : "create",

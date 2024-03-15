@@ -71,7 +71,6 @@ const SupermarketForm = ({
       updatedAt: supermarket?.updatedAt ?? new Date(),
       createdAt: supermarket?.createdAt ?? new Date(),
       id: supermarket?.id ?? '',
-      userId: supermarket?.userId ?? '',
       ...values,
     }
     try {
