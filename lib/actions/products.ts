@@ -1,11 +1,7 @@
-"use server";
+'use server'
 
-import { revalidatePath } from "next/cache";
-import {
-  createProduct,
-  deleteProduct,
-  updateProduct,
-} from "@/lib/api/products/mutations";
+import { revalidatePath } from 'next/cache'
+import { createProduct, deleteProduct, updateProduct } from '@/lib/api/products/mutations'
 import {
   ProductId,
   NewProductParams,
@@ -13,46 +9,93 @@ import {
   productIdSchema,
   insertProductParams,
   updateProductParams,
-} from "@/lib/db/schema/products";
+  CompleteProduct,
+} from '@/lib/db/schema/products'
+import { getShoppingListByCurrentDate } from '../api/shoppingLists/queries'
+import { ShoppingList } from '../db/schema/shoppingLists'
+import { getStartAndEndDateOfCurrentWeek, getUtcNow } from '../utils/dateExt'
+import { createShoppingListAction } from './shoppingLists'
+import { createShoppingProductAction } from './shoppingProducts'
 
 const handleErrors = (e: unknown) => {
-  const errMsg = "Error, please try again.";
-  if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg;
-  if (e && typeof e === "object" && "error" in e) {
-    const errAsStr = e.error as string;
-    return errAsStr.length > 0 ? errAsStr : errMsg;
+  const errMsg = 'Error, please try again.'
+  if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg
+  if (e && typeof e === 'object' && 'error' in e) {
+    const errAsStr = e.error as string
+    return errAsStr.length > 0 ? errAsStr : errMsg
   }
-  return errMsg;
-};
+  return errMsg
+}
 
-const revalidateProducts = () => revalidatePath("/products");
+const revalidateProducts = () => revalidatePath('/products')
 
 export const createProductAction = async (input: NewProductParams) => {
   try {
-    const payload = insertProductParams.parse(input);
-    await createProduct(payload);
-    revalidateProducts();
+    const payload = insertProductParams.parse(input)
+    await createProduct(payload)
+    revalidateProducts()
   } catch (e) {
-    return handleErrors(e);
+    return handleErrors(e)
   }
-};
+}
 
 export const updateProductAction = async (input: UpdateProductParams) => {
   try {
-    const payload = updateProductParams.parse(input);
-    await updateProduct(payload.id, payload);
-    revalidateProducts();
+    const payload = updateProductParams.parse(input)
+    await updateProduct(payload.id, payload)
+    revalidateProducts()
   } catch (e) {
-    return handleErrors(e);
+    return handleErrors(e)
   }
-};
+}
 
 export const deleteProductAction = async (input: ProductId) => {
   try {
-    const payload = productIdSchema.parse({ id: input });
-    await deleteProduct(payload.id);
-    revalidateProducts();
+    const payload = productIdSchema.parse({ id: input })
+    await deleteProduct(payload.id)
+    revalidateProducts()
   } catch (e) {
-    return handleErrors(e);
+    return handleErrors(e)
   }
-};
+}
+
+export const handleAddProdustToCurrentWeekShoppingList = async (product: CompleteProduct) => {
+  const { startDate, endDate } = getStartAndEndDateOfCurrentWeek()
+
+  let shoppingList = await getShoppingListByCurrentDate(startDate, endDate)
+  console.log(shoppingList)
+  if (!shoppingList) {
+    const currentDate = getUtcNow()
+    const pendingShoppingList: ShoppingList = {
+      updatedAt: currentDate,
+      createdAt: currentDate,
+      id: '',
+      userId: '',
+      weekDayStart: startDate,
+      weekDayEnd: endDate,
+      description: '',
+    }
+    try {
+      const result = await createShoppingListAction(pendingShoppingList)
+
+      console.log(result)
+      const errorFormatted = {
+        error: result ?? 'Error',
+        values: pendingShoppingList,
+      }
+      if (typeof result === 'string') {
+        return result
+      }
+      shoppingList = result
+    } catch (e) {
+      console.error(e)
+      return
+    }
+  }
+
+  console.log(shoppingList)
+  await createShoppingProductAction({
+    productId: product.id,
+    shoppingListId: (shoppingList as ShoppingList).id
+  })
+}

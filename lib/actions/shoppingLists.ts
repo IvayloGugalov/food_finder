@@ -30,8 +30,8 @@ const revalidateShoppingLists = () => revalidatePath("/shopping-lists");
 export const createShoppingListAction = async (input: NewShoppingListParams) => {
   try {
     const payload = insertShoppingListParams.parse(input);
-    await createShoppingList(payload);
     revalidateShoppingLists();
+    return await createShoppingList(payload);
   } catch (e) {
     return handleErrors(e);
   }
