@@ -16,6 +16,8 @@ import { ShoppingList } from '../db/schema/shoppingLists'
 import { getStartAndEndDateOfCurrentWeek, getUtcNow } from '../utils/dateExt'
 import { createShoppingListAction } from './shoppingLists'
 import { createShoppingProductAction } from './shoppingProducts'
+import { getShoppingProductByProductAndShoppingListId } from '../api/shoppingProducts/queries'
+import { updateShoppingProduct } from '../api/shoppingProducts/mutations'
 
 const handleErrors = (e: unknown) => {
   const errMsg = 'Error, please try again.'
@@ -62,8 +64,7 @@ export const deleteProductAction = async (input: ProductId) => {
 export const handleAddProdustToCurrentWeekShoppingList = async (product: CompleteProduct) => {
   const { startDate, endDate } = getStartAndEndDateOfCurrentWeek()
 
-  let shoppingList = await getShoppingListByCurrentDate(startDate, endDate)
-  console.log(shoppingList)
+  let { shoppingList } = await getShoppingListByCurrentDate(startDate, endDate)
   if (!shoppingList) {
     const currentDate = getUtcNow()
     const pendingShoppingList: ShoppingList = {
@@ -78,7 +79,6 @@ export const handleAddProdustToCurrentWeekShoppingList = async (product: Complet
     try {
       const result = await createShoppingListAction(pendingShoppingList)
 
-      console.log(result)
       const errorFormatted = {
         error: result ?? 'Error',
         values: pendingShoppingList,
@@ -86,16 +86,21 @@ export const handleAddProdustToCurrentWeekShoppingList = async (product: Complet
       if (typeof result === 'string') {
         return result
       }
-      shoppingList = result
+      shoppingList = result.shoppingList
     } catch (e) {
       console.error(e)
       return
     }
   }
 
-  console.log(shoppingList)
-  await createShoppingProductAction({
-    productId: product.id,
-    shoppingListId: (shoppingList as ShoppingList).id
-  })
+  const { shoppingProduct } = await getShoppingProductByProductAndShoppingListId(product.id, shoppingList.id)
+  if (shoppingProduct) {
+    await updateShoppingProduct(shoppingList.id, { ...shoppingProduct, quantity: shoppingProduct.quantity + 1 })
+  } else {
+    await createShoppingProductAction({
+      productId: product.id,
+      shoppingListId: shoppingList.id,
+      quantity: 1,
+    })
+  }
 }

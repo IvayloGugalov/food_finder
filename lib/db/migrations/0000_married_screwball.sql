@@ -29,15 +29,29 @@ CREATE TABLE IF NOT EXISTS "products" (
 	"valid_from" date,
 	"valid_until" date,
 	"supermarket_id" varchar(256) NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "shopping_lists" (
+	"id" varchar(191) PRIMARY KEY NOT NULL,
+	"description" text NOT NULL,
+	"week_day_start" timestamp DEFAULT now() NOT NULL,
+	"week_day_end" timestamp DEFAULT now() NOT NULL,
 	"user_id" varchar(256) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "shopping_products" (
+	"id" varchar(191) PRIMARY KEY NOT NULL,
+	"product_id" varchar(256) NOT NULL,
+	"shopping_list_id" varchar(256) NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "supermarkets" (
 	"id" varchar(191) PRIMARY KEY NOT NULL,
 	"name" varchar(256) NOT NULL,
-	"user_id" varchar(256) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -58,6 +72,18 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "products" ADD CONSTRAINT "products_supermarket_id_supermarkets_id_fk" FOREIGN KEY ("supermarket_id") REFERENCES "supermarkets"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "shopping_products" ADD CONSTRAINT "shopping_products_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "shopping_products" ADD CONSTRAINT "shopping_products_shopping_list_id_shopping_lists_id_fk" FOREIGN KEY ("shopping_list_id") REFERENCES "shopping_lists"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

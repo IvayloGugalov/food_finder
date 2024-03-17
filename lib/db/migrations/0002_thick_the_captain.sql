@@ -1,0 +1,1 @@
+ALTER TABLE "shopping_products" ALTER COLUMN "quantity" SET NOT NULL;

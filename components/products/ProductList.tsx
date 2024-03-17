@@ -1,6 +1,6 @@
 'use client'
 
-import { MouseEventHandler, useEffect, useState, useTransition } from 'react'
+import { MouseEventHandler, useEffect, useState } from 'react'
 import Image from 'next/image'
 
 import { cn } from '@/lib/utils'
@@ -14,18 +14,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { useFormStatus } from 'react-dom'
 import { handleAddProdustToCurrentWeekShoppingList } from '@/lib/actions/products'
 
-export default function ProductList({
-  products,
-  supermarkets,
-}: {
-  products: CompleteProduct[]
-  supermarkets: Supermarket[]
-}) {
+export default function ProductList({ products, supermarkets }: { products: CompleteProduct[]; supermarkets: Supermarket[] }) {
   const { optimisticProducts, addOptimisticProduct } = useOptimisticProducts(products, supermarkets)
-  const [pending, startMutation] = useTransition()
-
   const [state, setState] = useState({
-    selectedSupermarket: 't339e5lst6r28a4ike0ve' as string,
+    // TODO: REMOVE!!!!
+    selectedSupermarket: 'zun7p06i1uu4cu6x3joy1' as string,
     filteredProducts: [] as CompleteProduct[],
     activeProduct: null,
   })
@@ -46,13 +39,14 @@ export default function ProductList({
   }
 
   const sortProductsByCategory = (products: CompleteProduct[]) => {
-    return products.sort((a, b) => {
+    const b = products.sort((a, b) => {
       const categoryA = a.category ?? '\uffff' // Treat null as an empty string or any other default value
       const categoryB = b.category ?? '\uffff' // Treat null as an empty string or any other default value
       if (categoryA > categoryB) return -1
       if (categoryA < categoryB) return 1
       return 0
     })
+    return b
   }
 
   const filterProductsBySupermarket = (products: CompleteProduct[], supermarketId: string) => {
@@ -77,7 +71,10 @@ export default function ProductList({
           </SelectTrigger>
           <SelectContent>
             {supermarkets.map((market) => (
-              <SelectItem key={market.id} value={market.id}>
+              <SelectItem
+                key={market.id}
+                value={market.id}
+              >
                 {market.name}
               </SelectItem>
             ))}
@@ -101,13 +98,7 @@ export default function ProductList({
   )
 }
 
-const Product = ({
-  product,
-  handleSubmit,
-}: {
-  product: CompleteProduct
-  handleSubmit: (payload: CompleteProduct) => void
-}) => (
+const Product = ({ product, handleSubmit }: { product: CompleteProduct; handleSubmit: (payload: CompleteProduct) => void }) => (
   <Card className={cn('flex flex-col justify-between')}>
     <CardContent className='pt-4'>
       <div className='flex justify-center'>
@@ -134,11 +125,12 @@ const Product = ({
     <CardFooter className='py-[0.75rem] border-t-[1px] flex-row justify-between space-x-2'>
       <div className='flex flex-col gap-1'>
         <p className='text-lg font-medium leading-none'>{product.price} лв.</p>
-        {product.oldPrice && (
-          <p className='text-sm font-light text-slate-400'>{product.oldPrice} лв.</p>
-        )}
+        {product.oldPrice && <p className='text-sm font-light text-slate-400'>{product.oldPrice} лв.</p>}
       </div>
-      <SaveButton onClick={() => handleSubmit(product)} editing={false} />
+      <SaveButton
+        onClick={() => handleSubmit(product)}
+        editing={false}
+      />
     </CardFooter>
   </Card>
 )
@@ -155,13 +147,7 @@ const EmptyState = () => (
   </div>
 )
 
-const SaveButton = ({
-  editing,
-  onClick,
-}: {
-  editing: boolean
-  onClick: MouseEventHandler<HTMLButtonElement>
-}) => {
+const SaveButton = ({ editing, onClick }: { editing: boolean; onClick: MouseEventHandler<HTMLButtonElement> }) => {
   const { pending } = useFormStatus()
   const isCreating = pending && editing === false
   const isUpdating = pending && editing === true

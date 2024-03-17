@@ -1,6 +1,6 @@
 {
-  "id": "10c945b5-52c4-487f-ae47-dd9790b7c08f",
-  "prevId": "be4a824f-9b77-427e-9bc7-9726e22fca62",
+  "id": "6799d55f-71da-41a0-a8f9-ca2d285e36ba",
+  "prevId": "10c945b5-52c4-487f-ae47-dd9790b7c08f",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -304,7 +304,7 @@
           "name": "quantity",
           "type": "smallint",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": 1
         },
         "product_id": {

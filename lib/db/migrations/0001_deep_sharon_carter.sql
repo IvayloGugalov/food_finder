@@ -1,0 +1,1 @@
+ALTER TABLE "shopping_products" ADD COLUMN "quantity" smallint DEFAULT 1;

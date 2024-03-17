@@ -13,7 +13,7 @@ export const shoppingLists = pgTable('shopping_lists', {
     .$defaultFn(() => nanoid()),
   description: text('description').notNull(),
   weekDayStart: timestamp('week_day_start').notNull().default(sql`now()`),
-  weekDayEnd: timestamp('week_day_start').notNull().default(sql`now()`),
+  weekDayEnd: timestamp('week_day_end').notNull().default(sql`now()`),
   userId: varchar('user_id', { length: 256 }).notNull(),
 
   createdAt: timestamp('created_at').notNull().default(sql`now()`),

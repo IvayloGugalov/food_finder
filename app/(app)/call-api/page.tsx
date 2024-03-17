@@ -26,11 +26,11 @@ import { createProduct } from '@/lib/api/products/mutations'
 // const fetchUrl = 'https://sofia-supermarkets-api-proxy.stefan-bratanov.workers.dev/products'
 
 const ddd = [
-  { id: 'cpmscb3whzbobvy5e62p9', name: 'Lidl' },
-  { id: 'eh9sqtnux5mds0r9q8fmq', name: 'Billa' },
-  { id: 't339e5lst6r28a4ike0ve', name: 'Kaufland' },
-  { id: 'zheczr9v6aurfw8sdia09', name: 'T-Market' },
-  { id: 'x6gyx0q77i7smrlpo99qo', name: 'Fantastico' },
+  { id: 'ouh11dqxk9xjmrhzn8v4s', name: 'Lidl' },
+  { id: '5rvif4y3b4u3by78b1837', name: 'Billa' },
+  { id: 'zun7p06i1uu4cu6x3joy1', name: 'Kaufland' },
+  { id: 'wxm18uuk524j3gl5vvl8n', name: 'T-Market' },
+  { id: 'o7v3p397v1rq97iju91ee', name: 'Fantastico' },
 ]
 
 const mapIdByName = (name, supermarkets) => {
@@ -55,7 +55,7 @@ export default async function GenerateAllPage() {
       .flat()
 
     // const creatingsuperMarkets = superMarkets.map((spmr) => {
-    //   createSupermarket(spmr as unknown as NewSupermarketParams)
+    //   createSupermarket({name: spmr })
     // })
     // await Promise.all(creatingsuperMarkets)
 

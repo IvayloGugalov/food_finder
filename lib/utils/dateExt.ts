@@ -16,6 +16,6 @@ export function getStartAndEndDateOfCurrentWeek() {
   return { startDate, endDate }
 }
 
-export const getUtcNow = () => new Date(moment.utc().format())
+export const getUtcNow = () => new Date(moment.utc().startOf('day').format())
 export const getUtcFromDate = (date: Date) => new Date(moment.utc(date).format())
 export const getUtcFromString = (date: string) => new Date(moment.utc(date).format())
