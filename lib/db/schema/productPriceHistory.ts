@@ -47,8 +47,6 @@ export const insertProductPriceHistorySchema = createInsertSchema(productPriceHi
 export const insertProductPriceHistoryParams = baseSchema
   .extend({
     productId: z.coerce.string().min(1),
-    weekDayStart: z.coerce.string().min(1),
-    weekDayEnd: z.coerce.string().min(1),
     price: z.coerce.number(),
     oldPrice: z.coerce.number(),
   })
@@ -59,8 +57,6 @@ export const insertProductPriceHistoryParams = baseSchema
 export const updateProductPriceHistorySchema = baseSchema
 export const updateProductPriceHistoryParams = baseSchema.extend({
   productId: z.coerce.string().min(1),
-  weekDayStart: z.coerce.string().min(1),
-  weekDayEnd: z.coerce.string().min(1),
   price: z.coerce.number(),
   oldPrice: z.coerce.number(),
 })

@@ -47,8 +47,6 @@ export const insertProductParams = baseSchema
   .extend({
     price: z.coerce.number(),
     oldPrice: z.coerce.number(),
-    validFrom: z.coerce.string().min(1),
-    validUntil: z.coerce.string().min(1),
     supermarketId: z.coerce.string().min(1),
   })
   .omit({
@@ -59,8 +57,6 @@ export const updateProductSchema = baseSchema
 export const updateProductParams = baseSchema.extend({
   price: z.coerce.number(),
   oldPrice: z.coerce.number(),
-  validFrom: z.coerce.string().min(1),
-  validUntil: z.coerce.string().min(1),
   supermarketId: z.coerce.string().min(1),
 })
 
