@@ -40,6 +40,7 @@ export const createShoppingProductAction = async (input: NewShoppingProductParam
 export const updateShoppingProductAction = async (input: UpdateShoppingProductParams) => {
   try {
     const payload = updateShoppingProductParams.parse(input);
+    console.log(payload)
     await updateShoppingProduct(payload.id, payload);
     revalidateShoppingProducts();
   } catch (e) {

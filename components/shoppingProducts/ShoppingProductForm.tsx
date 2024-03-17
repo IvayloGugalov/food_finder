@@ -14,13 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { useBackPath } from '@/components/shared/BackButton'
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 import { type ShoppingProduct, insertShoppingProductParams } from '@/lib/db/schema/shoppingProducts'
 import {
@@ -52,9 +46,7 @@ const ShoppingProductForm = ({
   addOptimistic?: TAddOptimistic
   postSuccess?: () => void
 }) => {
-  const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<ShoppingProduct>(
-    insertShoppingProductParams
-  )
+  const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<ShoppingProduct>(insertShoppingProductParams)
   const editing = !!shoppingProduct?.id
 
   const [isDeleting, setIsDeleting] = useState(false)
@@ -124,55 +116,67 @@ const ShoppingProductForm = ({
   }
 
   return (
-    <form action={handleSubmit} onChange={handleChange} className={'space-y-8'}>
+    <form
+      action={handleSubmit}
+      onChange={handleChange}
+      className={'space-y-8'}
+    >
       {/* Schema fields start */}
 
       {productId ? null : (
         <div>
-          <Label className={cn('mb-2 inline-block', errors?.productId ? 'text-destructive' : '')}>
-            Product
-          </Label>
-          <Select defaultValue={shoppingProduct?.productId} name='productId'>
+          <Label className={cn('mb-2 inline-block', errors?.productId ? 'text-destructive' : '')}>Product</Label>
+          <Select
+            defaultValue={shoppingProduct?.productId}
+            name='productId'
+          >
             <SelectTrigger className={cn(errors?.productId ? 'ring ring-destructive' : '')}>
               <SelectValue placeholder='Select a product' />
             </SelectTrigger>
             <SelectContent>
               {products?.map((product) => (
-                <SelectItem key={product.id} value={product.id.toString()}>
+                <SelectItem
+                  key={product.id}
+                  value={product.id.toString()}
+                >
                   {product.id}
                   {/* TODO: Replace with a field from the product model */}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          {errors?.productId ? (
-            <p className='text-xs text-destructive mt-2'>{errors.productId[0]}</p>
-          ) : (
-            <div className='h-6' />
-          )}
+          {errors?.productId ? <p className='text-xs text-destructive mt-2'>{errors.productId[0]}</p> : <div className='h-6' />}
         </div>
       )}
 
       {shoppingListId ? null : (
         <div>
-          <Label
-            className={cn('mb-2 inline-block', errors?.shoppingListId ? 'text-destructive' : '')}
+          <Label className={cn('mb-2 inline-block', errors?.shoppingListId ? 'text-destructive' : '')}>ShoppingList</Label>
+          <Select
+            defaultValue={shoppingProduct?.shoppingListId}
+            name='shoppingListId'
           >
-            ShoppingList
-          </Label>
-          <Select defaultValue={shoppingProduct?.shoppingListId} name='shoppingListId'>
             <SelectTrigger className={cn(errors?.shoppingListId ? 'ring ring-destructive' : '')}>
               <SelectValue placeholder='Select a shoppingList' />
             </SelectTrigger>
             <SelectContent>
               {shoppingLists?.map((shoppingList) => (
-                <SelectItem key={shoppingList.id} value={shoppingList.id.toString()}>
+                <SelectItem
+                  key={shoppingList.id}
+                  value={shoppingList.id.toString()}
+                >
                   {shoppingList.id}
                   {/* TODO: Replace with a field from the shoppingList model */}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+          <div className='pt-4'>
+            <Input
+              name='quantity'
+              defaultValue={shoppingProduct?.quantity ?? '0'}
+            />
+          </div>
           {errors?.shoppingListId ? (
             <p className='text-xs text-destructive mt-2'>{errors.shoppingListId[0]}</p>
           ) : (
@@ -183,7 +187,10 @@ const ShoppingProductForm = ({
       {/* Schema fields end */}
 
       {/* Save Button */}
-      <SaveButton errors={hasErrors} editing={editing} />
+      <SaveButton
+        errors={hasErrors}
+        editing={editing}
+      />
 
       {/* Delete Button */}
       {editing ? (

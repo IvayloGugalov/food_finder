@@ -18,6 +18,7 @@ import { createShoppingListAction } from './shoppingLists'
 import { createShoppingProductAction } from './shoppingProducts'
 import { getShoppingProductByProductAndShoppingListId } from '../api/shoppingProducts/queries'
 import { updateShoppingProduct } from '../api/shoppingProducts/mutations'
+import { updateShoppingProductParams } from '../db/schema/shoppingProducts'
 
 const handleErrors = (e: unknown) => {
   const errMsg = 'Error, please try again.'
@@ -93,9 +94,17 @@ export const handleAddProdustToCurrentWeekShoppingList = async (product: Complet
     }
   }
 
-  const { shoppingProduct } = await getShoppingProductByProductAndShoppingListId(product.id, shoppingList.id)
+  const { shoppingProduct } = await getShoppingProductByProductAndShoppingListId(
+    product.id,
+    shoppingList.id)
+
   if (shoppingProduct) {
-    await updateShoppingProduct(shoppingList.id, { ...shoppingProduct, quantity: shoppingProduct.quantity + 1 })
+    const payload = updateShoppingProductParams.parse({
+      ...shoppingProduct,
+      quantity: ++shoppingProduct.quantity
+    })
+
+    await updateShoppingProduct(shoppingList.id, payload)
   } else {
     await createShoppingProductAction({
       productId: product.id,

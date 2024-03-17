@@ -12,12 +12,20 @@ export const shoppingLists = pgTable('shopping_lists', {
     .primaryKey()
     .$defaultFn(() => nanoid()),
   description: text('description').notNull(),
-  weekDayStart: timestamp('week_day_start').notNull().default(sql`now()`),
-  weekDayEnd: timestamp('week_day_end').notNull().default(sql`now()`),
+  weekDayStart: timestamp('week_day_start')
+    .notNull()
+    .default(sql`now()`),
+  weekDayEnd: timestamp('week_day_end')
+    .notNull()
+    .default(sql`now()`),
   userId: varchar('user_id', { length: 256 }).notNull(),
 
-  createdAt: timestamp('created_at').notNull().default(sql`now()`),
-  updatedAt: timestamp('updated_at').notNull().default(sql`now()`),
+  createdAt: timestamp('created_at')
+    .notNull()
+    .default(sql`now()`),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .default(sql`now()`),
 })
 
 // Schema for shoppingLists - used to validate API requests
@@ -44,6 +52,4 @@ export type UpdateShoppingListParams = z.infer<typeof updateShoppingListParams>
 export type ShoppingListId = z.infer<typeof shoppingListIdSchema>['id']
 
 // this type infers the return from getShoppingLists() - meaning it will include any joins
-export type CompleteShoppingList = Awaited<
-  ReturnType<typeof getShoppingLists>
->['shoppingLists'][number]
+export type CompleteShoppingList = Awaited<ReturnType<typeof getShoppingLists>>['shoppingLists'][number]
