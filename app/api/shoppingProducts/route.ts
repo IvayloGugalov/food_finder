@@ -38,7 +38,10 @@ export async function PUT(req: Request) {
     const validatedData = updateShoppingProductParams.parse(await req.json())
     const validatedParams = shoppingProductIdSchema.parse({ id })
 
-    const { shoppingProduct } = await updateShoppingProduct(validatedParams.id, validatedData)
+    const { shoppingProduct } = await updateShoppingProduct(
+      validatedParams.id,
+      validatedData
+    )
 
     return NextResponse.json(shoppingProduct, { status: 200 })
   } catch (err) {

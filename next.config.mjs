@@ -25,7 +25,7 @@ const nextConfig = {
         hostname: 'webassets.kaufland.com',
         port: '',
         pathname: '/**',
-      }
+      },
     ],
   },
 }

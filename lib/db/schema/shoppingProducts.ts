@@ -41,7 +41,10 @@ export const updateShoppingProductParams = baseSchema.extend({
   shoppingListId: z.coerce.string().min(1),
 })
 export const shoppingProductIdSchema = baseSchema.pick({ id: true })
-export const shoppingProductProductAndShoppingListIdSchema = baseSchema.pick({ productId: true, shoppingListId: true })
+export const shoppingProductProductAndShoppingListIdSchema = baseSchema.pick({
+  productId: true,
+  shoppingListId: true,
+})
 
 // Types for shoppingProducts - used to type API request params and within Components
 export type ShoppingProduct = typeof shoppingProducts.$inferSelect
@@ -51,4 +54,6 @@ export type UpdateShoppingProductParams = z.infer<typeof updateShoppingProductPa
 export type ShoppingProductId = z.infer<typeof shoppingProductIdSchema>['id']
 
 // this type infers the return from getShoppingProducts() - meaning it will include any joins
-export type CompleteShoppingProduct = Awaited<ReturnType<typeof getShoppingProducts>>['shoppingProducts'][number]
+export type CompleteShoppingProduct = Awaited<
+  ReturnType<typeof getShoppingProducts>
+>['shoppingProducts'][number]

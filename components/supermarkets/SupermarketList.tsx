@@ -15,8 +15,13 @@ import { PlusIcon } from 'lucide-react'
 
 type TOpenModal = (supermarket?: Supermarket) => void
 
-export default function SupermarketList({ supermarkets }: { supermarkets: CompleteSupermarket[] }) {
-  const { optimisticSupermarkets, addOptimisticSupermarket } = useOptimisticSupermarkets(supermarkets)
+export default function SupermarketList({
+  supermarkets,
+}: {
+  supermarkets: CompleteSupermarket[]
+}) {
+  const { optimisticSupermarkets, addOptimisticSupermarket } =
+    useOptimisticSupermarkets(supermarkets)
   const [open, setOpen] = useState(false)
   const [activeSupermarket, setActiveSupermarket] = useState<Supermarket | null>(null)
   const openModal = (supermarket?: Supermarket) => {
@@ -49,7 +54,11 @@ export default function SupermarketList({ supermarkets }: { supermarkets: Comple
       ) : (
         <ul>
           {optimisticSupermarkets.map((supermarket) => (
-            <Supermarket supermarket={supermarket} key={supermarket.id} openModal={openModal} />
+            <Supermarket
+              supermarket={supermarket}
+              key={supermarket.id}
+              openModal={openModal}
+            />
           ))}
         </ul>
       )}
@@ -68,7 +77,9 @@ const Supermarket = ({
   const deleting = supermarket.id === 'delete'
   const mutating = optimistic || deleting
   const pathname = usePathname()
-  const basePath = pathname.includes('supermarkets') ? pathname : pathname + '/supermarkets/'
+  const basePath = pathname.includes('supermarkets')
+    ? pathname
+    : pathname + '/supermarkets/'
 
   return (
     <li
@@ -91,7 +102,9 @@ const Supermarket = ({
 const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
   return (
     <div className='text-center'>
-      <h3 className='mt-2 text-sm font-semibold text-secondary-foreground'>No supermarkets</h3>
+      <h3 className='mt-2 text-sm font-semibold text-secondary-foreground'>
+        No supermarkets
+      </h3>
       <p className='mt-1 text-sm text-muted-foreground'>
         Get started by creating a new supermarket.
       </p>

@@ -1,10 +1,10 @@
-import { computersRouter } from "./computers";
-import { router } from "@/lib/server/trpc";
-import { supermarketsRouter } from "./supermarkets";
-import { productsRouter } from "./products";
-import { shoppingListsRouter } from "./shoppingLists";
-import { shoppingProductsRouter } from "./shoppingProducts";
-import { productPriceHistoryRouter } from "./productPriceHistory";
+import { computersRouter } from './computers'
+import { router } from '@/lib/server/trpc'
+import { supermarketsRouter } from './supermarkets'
+import { productsRouter } from './products'
+import { shoppingListsRouter } from './shoppingLists'
+import { shoppingProductsRouter } from './shoppingProducts'
+import { productPriceHistoryRouter } from './productPriceHistory'
 
 export const appRouter = router({
   computers: computersRouter,
@@ -13,6 +13,6 @@ export const appRouter = router({
   shoppingLists: shoppingListsRouter,
   shoppingProducts: shoppingProductsRouter,
   productPriceHistory: productPriceHistoryRouter,
-});
+})
 
-export type AppRouter = typeof appRouter;
+export type AppRouter = typeof appRouter

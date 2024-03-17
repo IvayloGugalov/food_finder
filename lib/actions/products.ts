@@ -1,7 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createProduct, deleteProduct, updateProduct } from '@/lib/api/products/mutations'
+import {
+  createProduct,
+  deleteProduct,
+  updateProduct,
+} from '@/lib/api/products/mutations'
 import {
   ProductId,
   NewProductParams,
@@ -62,7 +66,9 @@ export const deleteProductAction = async (input: ProductId) => {
   }
 }
 
-export const handleAddProdustToCurrentWeekShoppingList = async (product: CompleteProduct) => {
+export const handleAddProdustToCurrentWeekShoppingList = async (
+  product: CompleteProduct
+) => {
   const { startDate, endDate } = getStartAndEndDateOfCurrentWeek()
 
   let { shoppingList } = await getShoppingListByCurrentDate(startDate, endDate)
@@ -96,12 +102,13 @@ export const handleAddProdustToCurrentWeekShoppingList = async (product: Complet
 
   const { shoppingProduct } = await getShoppingProductByProductAndShoppingListId(
     product.id,
-    shoppingList.id)
+    shoppingList.id
+  )
 
   if (shoppingProduct) {
     const payload = updateShoppingProductParams.parse({
       ...shoppingProduct,
-      quantity: ++shoppingProduct.quantity
+      quantity: ++shoppingProduct.quantity,
     })
 
     await updateShoppingProduct(shoppingList.id, payload)

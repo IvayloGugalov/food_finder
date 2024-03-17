@@ -10,7 +10,9 @@ import {
   shoppingProductIdSchema,
 } from '@/lib/db/schema/shoppingProducts'
 
-export const createShoppingProduct = async (shoppingProduct: NewShoppingProductParams) => {
+export const createShoppingProduct = async (
+  shoppingProduct: NewShoppingProductParams
+) => {
   const newShoppingProduct = insertShoppingProductSchema.parse(shoppingProduct)
   try {
     const [s] = await db.insert(shoppingProducts).values(newShoppingProduct).returning()
@@ -22,7 +24,10 @@ export const createShoppingProduct = async (shoppingProduct: NewShoppingProductP
   }
 }
 
-export const updateShoppingProduct = async (id: ShoppingProductId, shoppingProduct: UpdateShoppingProductParams) => {
+export const updateShoppingProduct = async (
+  id: ShoppingProductId,
+  shoppingProduct: UpdateShoppingProductParams
+) => {
   const { id: shoppingProductId } = shoppingProductIdSchema.parse({ id })
   const newShoppingProduct = updateShoppingProductSchema.parse(shoppingProduct)
   console.log(newShoppingProduct)
@@ -46,7 +51,10 @@ export const updateShoppingProduct = async (id: ShoppingProductId, shoppingProdu
 export const deleteShoppingProduct = async (id: ShoppingProductId) => {
   const { id: shoppingProductId } = shoppingProductIdSchema.parse({ id })
   try {
-    const [s] = await db.delete(shoppingProducts).where(eq(shoppingProducts.id, shoppingProductId!)).returning()
+    const [s] = await db
+      .delete(shoppingProducts)
+      .where(eq(shoppingProducts.id, shoppingProductId!))
+      .returning()
     return { shoppingProduct: s }
   } catch (err) {
     const message = (err as Error).message ?? 'Error, please try again'

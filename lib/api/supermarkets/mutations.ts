@@ -22,7 +22,10 @@ export const createSupermarket = async (supermarket: NewSupermarketParams) => {
   }
 }
 
-export const updateSupermarket = async (id: SupermarketId, supermarket: UpdateSupermarketParams) => {
+export const updateSupermarket = async (
+  id: SupermarketId,
+  supermarket: UpdateSupermarketParams
+) => {
   const { id: supermarketId } = supermarketIdSchema.parse({ id })
   const newSupermarket = updateSupermarketSchema.parse(supermarket)
   try {

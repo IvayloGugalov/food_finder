@@ -54,8 +54,12 @@ const ProductForm = ({
   const { errors, hasErrors, setErrors, handleChange } =
     useValidatedForm<Product>(insertProductParams)
   const editing = !!product?.id
-  const [validFrom, setValidFrom] = useState<Date | undefined>(new Date(product?.validFrom ?? ''))
-  const [validUntil, setValidUntil] = useState<Date | undefined>(new Date(product?.validUntil ?? ''))
+  const [validFrom, setValidFrom] = useState<Date | undefined>(
+    new Date(product?.validFrom ?? '')
+  )
+  const [validUntil, setValidUntil] = useState<Date | undefined>(
+    new Date(product?.validUntil ?? '')
+  )
 
   const [isDeleting, setIsDeleting] = useState(false)
   const [pending, startMutation] = useTransition()

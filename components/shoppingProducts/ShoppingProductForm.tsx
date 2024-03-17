@@ -14,9 +14,18 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { useBackPath } from '@/components/shared/BackButton'
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
-import { type ShoppingProduct, insertShoppingProductParams } from '@/lib/db/schema/shoppingProducts'
+import {
+  type ShoppingProduct,
+  insertShoppingProductParams,
+} from '@/lib/db/schema/shoppingProducts'
 import {
   createShoppingProductAction,
   deleteShoppingProductAction,
@@ -46,7 +55,8 @@ const ShoppingProductForm = ({
   addOptimistic?: TAddOptimistic
   postSuccess?: () => void
 }) => {
-  const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<ShoppingProduct>(insertShoppingProductParams)
+  const { errors, hasErrors, setErrors, handleChange } =
+    useValidatedForm<ShoppingProduct>(insertShoppingProductParams)
   const editing = !!shoppingProduct?.id
 
   const [isDeleting, setIsDeleting] = useState(false)
@@ -55,7 +65,10 @@ const ShoppingProductForm = ({
   const router = useRouter()
   const backpath = useBackPath('shopping-products')
 
-  const onSuccess = (action: Action, data?: { error: string; values: ShoppingProduct }) => {
+  const onSuccess = (
+    action: Action,
+    data?: { error: string; values: ShoppingProduct }
+  ) => {
     const failed = Boolean(data?.error)
     if (failed) {
       openModal && openModal(data?.values)
@@ -116,55 +129,61 @@ const ShoppingProductForm = ({
   }
 
   return (
-    <form
-      action={handleSubmit}
-      onChange={handleChange}
-      className={'space-y-8'}
-    >
+    <form action={handleSubmit} onChange={handleChange} className={'space-y-8'}>
       {/* Schema fields start */}
 
       {productId ? null : (
         <div>
-          <Label className={cn('mb-2 inline-block', errors?.productId ? 'text-destructive' : '')}>Product</Label>
-          <Select
-            defaultValue={shoppingProduct?.productId}
-            name='productId'
+          <Label
+            className={cn(
+              'mb-2 inline-block',
+              errors?.productId ? 'text-destructive' : ''
+            )}
           >
-            <SelectTrigger className={cn(errors?.productId ? 'ring ring-destructive' : '')}>
+            Product
+          </Label>
+          <Select defaultValue={shoppingProduct?.productId} name='productId'>
+            <SelectTrigger
+              className={cn(errors?.productId ? 'ring ring-destructive' : '')}
+            >
               <SelectValue placeholder='Select a product' />
             </SelectTrigger>
             <SelectContent>
               {products?.map((product) => (
-                <SelectItem
-                  key={product.id}
-                  value={product.id.toString()}
-                >
+                <SelectItem key={product.id} value={product.id.toString()}>
                   {product.id}
                   {/* TODO: Replace with a field from the product model */}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          {errors?.productId ? <p className='text-xs text-destructive mt-2'>{errors.productId[0]}</p> : <div className='h-6' />}
+          {errors?.productId ? (
+            <p className='text-xs text-destructive mt-2'>{errors.productId[0]}</p>
+          ) : (
+            <div className='h-6' />
+          )}
         </div>
       )}
 
       {shoppingListId ? null : (
         <div>
-          <Label className={cn('mb-2 inline-block', errors?.shoppingListId ? 'text-destructive' : '')}>ShoppingList</Label>
-          <Select
-            defaultValue={shoppingProduct?.shoppingListId}
-            name='shoppingListId'
+          <Label
+            className={cn(
+              'mb-2 inline-block',
+              errors?.shoppingListId ? 'text-destructive' : ''
+            )}
           >
-            <SelectTrigger className={cn(errors?.shoppingListId ? 'ring ring-destructive' : '')}>
+            ShoppingList
+          </Label>
+          <Select defaultValue={shoppingProduct?.shoppingListId} name='shoppingListId'>
+            <SelectTrigger
+              className={cn(errors?.shoppingListId ? 'ring ring-destructive' : '')}
+            >
               <SelectValue placeholder='Select a shoppingList' />
             </SelectTrigger>
             <SelectContent>
               {shoppingLists?.map((shoppingList) => (
-                <SelectItem
-                  key={shoppingList.id}
-                  value={shoppingList.id.toString()}
-                >
+                <SelectItem key={shoppingList.id} value={shoppingList.id.toString()}>
                   {shoppingList.id}
                   {/* TODO: Replace with a field from the shoppingList model */}
                 </SelectItem>
@@ -172,10 +191,7 @@ const ShoppingProductForm = ({
             </SelectContent>
           </Select>
           <div className='pt-4'>
-            <Input
-              name='quantity'
-              defaultValue={shoppingProduct?.quantity ?? '0'}
-            />
+            <Input name='quantity' defaultValue={shoppingProduct?.quantity ?? '0'} />
           </div>
           {errors?.shoppingListId ? (
             <p className='text-xs text-destructive mt-2'>{errors.shoppingListId[0]}</p>
@@ -187,10 +203,7 @@ const ShoppingProductForm = ({
       {/* Schema fields end */}
 
       {/* Save Button */}
-      <SaveButton
-        errors={hasErrors}
-        editing={editing}
-      />
+      <SaveButton errors={hasErrors} editing={editing} />
 
       {/* Delete Button */}
       {editing ? (
@@ -202,7 +215,8 @@ const ShoppingProductForm = ({
             setIsDeleting(true)
             closeModal && closeModal()
             startMutation(async () => {
-              addOptimistic && addOptimistic({ action: 'delete', data: shoppingProduct })
+              addOptimistic &&
+                addOptimistic({ action: 'delete', data: shoppingProduct })
               const error = await deleteShoppingProductAction(shoppingProduct.id)
               setIsDeleting(false)
               const errorFormatted = {
@@ -234,7 +248,9 @@ const SaveButton = ({ editing, errors }: { editing: boolean; errors: boolean }) 
       disabled={isCreating || isUpdating || errors}
       aria-disabled={isCreating || isUpdating || errors}
     >
-      {editing ? `Sav${isUpdating ? 'ing...' : 'e'}` : `Creat${isCreating ? 'ing...' : 'e'}`}
+      {editing
+        ? `Sav${isUpdating ? 'ing...' : 'e'}`
+        : `Creat${isCreating ? 'ing...' : 'e'}`}
     </Button>
   )
 }

@@ -1,4 +1,7 @@
-import { type Supermarket, type CompleteSupermarket } from '@/lib/db/schema/supermarkets'
+import {
+  type Supermarket,
+  type CompleteSupermarket,
+} from '@/lib/db/schema/supermarkets'
 import { OptimisticAction } from '@/lib/utils'
 import { useOptimistic } from 'react'
 

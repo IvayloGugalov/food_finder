@@ -9,13 +9,35 @@ import { type Supermarket } from '@/lib/db/schema/supermarkets'
 import { useOptimisticProducts } from '@/app/(app)/products/useOptimisticProducts'
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '../ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select'
 import { useFormStatus } from 'react-dom'
 import { handleAddProdustToCurrentWeekShoppingList } from '@/lib/actions/products'
 
-export default function ProductList({ products, supermarkets }: { products: CompleteProduct[]; supermarkets: Supermarket[] }) {
-  const { optimisticProducts, addOptimisticProduct } = useOptimisticProducts(products, supermarkets)
+export default function ProductList({
+  products,
+  supermarkets,
+}: {
+  products: CompleteProduct[]
+  supermarkets: Supermarket[]
+}) {
+  const { optimisticProducts, addOptimisticProduct } = useOptimisticProducts(
+    products,
+    supermarkets
+  )
   const [state, setState] = useState({
     // TODO: REMOVE!!!!
     selectedSupermarket: 'zun7p06i1uu4cu6x3joy1' as string,
@@ -24,7 +46,10 @@ export default function ProductList({ products, supermarkets }: { products: Comp
   })
 
   useEffect(() => {
-    const filtered = filterProductsBySupermarket(optimisticProducts, state.selectedSupermarket)
+    const filtered = filterProductsBySupermarket(
+      optimisticProducts,
+      state.selectedSupermarket
+    )
     setState((prevState) => ({
       ...prevState,
       filteredProducts: sortProductsByCategory(filtered),
@@ -49,7 +74,10 @@ export default function ProductList({ products, supermarkets }: { products: Comp
     return b
   }
 
-  const filterProductsBySupermarket = (products: CompleteProduct[], supermarketId: string) => {
+  const filterProductsBySupermarket = (
+    products: CompleteProduct[],
+    supermarketId: string
+  ) => {
     if (!supermarketId) return products
     return products.filter((p) => p.supermarket?.id === supermarketId)
   }
@@ -58,7 +86,9 @@ export default function ProductList({ products, supermarkets }: { products: Comp
     <div>
       <div className='absolute right-0 top-0 '>
         <Button
-          onClick={() => console.error('Adding new product by hand is not implemented ')}
+          onClick={() =>
+            console.error('Adding new product by hand is not implemented ')
+          }
           variant={'outline'}
         >
           +
@@ -71,10 +101,7 @@ export default function ProductList({ products, supermarkets }: { products: Comp
           </SelectTrigger>
           <SelectContent>
             {supermarkets.map((market) => (
-              <SelectItem
-                key={market.id}
-                value={market.id}
-              >
+              <SelectItem key={market.id} value={market.id}>
                 {market.name}
               </SelectItem>
             ))}
@@ -98,7 +125,13 @@ export default function ProductList({ products, supermarkets }: { products: Comp
   )
 }
 
-const Product = ({ product, handleSubmit }: { product: CompleteProduct; handleSubmit: (payload: CompleteProduct) => void }) => (
+const Product = ({
+  product,
+  handleSubmit,
+}: {
+  product: CompleteProduct
+  handleSubmit: (payload: CompleteProduct) => void
+}) => (
   <Card className={cn('flex flex-col justify-between')}>
     <CardContent className='pt-4'>
       <div className='flex justify-center'>
@@ -125,20 +158,23 @@ const Product = ({ product, handleSubmit }: { product: CompleteProduct; handleSu
     <CardFooter className='py-[0.75rem] border-t-[1px] flex-row justify-between space-x-2'>
       <div className='flex flex-col gap-1'>
         <p className='text-lg font-medium leading-none'>{product.price} лв.</p>
-        {product.oldPrice && <p className='text-sm font-light text-slate-400'>{product.oldPrice} лв.</p>}
+        {product.oldPrice && (
+          <p className='text-sm font-light text-slate-400'>{product.oldPrice} лв.</p>
+        )}
       </div>
-      <SaveButton
-        onClick={() => handleSubmit(product)}
-        editing={false}
-      />
+      <SaveButton onClick={() => handleSubmit(product)} editing={false} />
     </CardFooter>
   </Card>
 )
 
 const EmptyState = () => (
   <div className='text-center'>
-    <h3 className='mt-2 text-sm font-semibold text-secondary-foreground'>No products</h3>
-    <p className='mt-1 text-sm text-muted-foreground'>Get started by creating a new product.</p>
+    <h3 className='mt-2 text-sm font-semibold text-secondary-foreground'>
+      No products
+    </h3>
+    <p className='mt-1 text-sm text-muted-foreground'>
+      Get started by creating a new product.
+    </p>
     <div className='mt-6'>
       <Button>
         <PlusIcon className='h-4' /> New Products{' '}
@@ -147,7 +183,13 @@ const EmptyState = () => (
   </div>
 )
 
-const SaveButton = ({ editing, onClick }: { editing: boolean; onClick: MouseEventHandler<HTMLButtonElement> }) => {
+const SaveButton = ({
+  editing,
+  onClick,
+}: {
+  editing: boolean
+  onClick: MouseEventHandler<HTMLButtonElement>
+}) => {
   const { pending } = useFormStatus()
   const isCreating = pending && editing === false
   const isUpdating = pending && editing === true

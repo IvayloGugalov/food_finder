@@ -1,48 +1,45 @@
+import {
+  type ShoppingList,
+  type CompleteShoppingList,
+} from '@/lib/db/schema/shoppingLists'
+import { OptimisticAction } from '@/lib/utils'
+import { useOptimistic } from 'react'
 
-import { type ShoppingList, type CompleteShoppingList } from "@/lib/db/schema/shoppingLists";
-import { OptimisticAction } from "@/lib/utils";
-import { useOptimistic } from "react";
+export type TAddOptimistic = (action: OptimisticAction<ShoppingList>) => void
 
-export type TAddOptimistic = (action: OptimisticAction<ShoppingList>) => void;
-
-export const useOptimisticShoppingLists = (
-  shoppingLists: CompleteShoppingList[],
-  
-) => {
+export const useOptimisticShoppingLists = (shoppingLists: CompleteShoppingList[]) => {
   const [optimisticShoppingLists, addOptimisticShoppingList] = useOptimistic(
     shoppingLists,
     (
       currentState: CompleteShoppingList[],
-      action: OptimisticAction<ShoppingList>,
+      action: OptimisticAction<ShoppingList>
     ): CompleteShoppingList[] => {
-      const { data } = action;
-
-      
+      const { data } = action
 
       const optimisticShoppingList = {
         ...data,
-        
-        id: "optimistic",
-      };
+
+        id: 'optimistic',
+      }
 
       switch (action.action) {
-        case "create":
+        case 'create':
           return currentState.length === 0
             ? [optimisticShoppingList]
-            : [...currentState, optimisticShoppingList];
-        case "update":
+            : [...currentState, optimisticShoppingList]
+        case 'update':
           return currentState.map((item) =>
-            item.id === data.id ? { ...item, ...optimisticShoppingList } : item,
-          );
-        case "delete":
+            item.id === data.id ? { ...item, ...optimisticShoppingList } : item
+          )
+        case 'delete':
           return currentState.map((item) =>
-            item.id === data.id ? { ...item, id: "delete" } : item,
-          );
+            item.id === data.id ? { ...item, id: 'delete' } : item
+          )
         default:
-          return currentState;
+          return currentState
       }
-    },
-  );
+    }
+  )
 
-  return { addOptimisticShoppingList, optimisticShoppingLists };
-};
+  return { addOptimisticShoppingList, optimisticShoppingLists }
+}

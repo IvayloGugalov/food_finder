@@ -43,7 +43,8 @@ export const productPriceHistory = pgTable(
 // Schema for productPriceHistory - used to validate API requests
 const baseSchema = createSelectSchema(productPriceHistory).omit(timestamps)
 
-export const insertProductPriceHistorySchema = createInsertSchema(productPriceHistory).omit(timestamps)
+export const insertProductPriceHistorySchema =
+  createInsertSchema(productPriceHistory).omit(timestamps)
 export const insertProductPriceHistoryParams = baseSchema
   .extend({
     productId: z.coerce.string().min(1),
@@ -65,9 +66,15 @@ export const productPriceHistoryIdSchema = baseSchema.pick({ id: true })
 // Types for productPriceHistory - used to type API request params and within Components
 export type ProductPriceHistory = typeof productPriceHistory.$inferSelect
 export type NewProductPriceHistory = z.infer<typeof insertProductPriceHistorySchema>
-export type NewProductPriceHistoryParams = z.infer<typeof insertProductPriceHistoryParams>
-export type UpdateProductPriceHistoryParams = z.infer<typeof updateProductPriceHistoryParams>
+export type NewProductPriceHistoryParams = z.infer<
+  typeof insertProductPriceHistoryParams
+>
+export type UpdateProductPriceHistoryParams = z.infer<
+  typeof updateProductPriceHistoryParams
+>
 export type ProductPriceHistoryId = z.infer<typeof productPriceHistoryIdSchema>['id']
 
 // this type infers the return from getProductPriceHistories() - meaning it will include any joins
-export type CompleteProductPriceHistory = Awaited<ReturnType<typeof getProductPriceHistories>>['productPriceHistory'][number]
+export type CompleteProductPriceHistory = Awaited<
+  ReturnType<typeof getProductPriceHistories>
+>['productPriceHistory'][number]

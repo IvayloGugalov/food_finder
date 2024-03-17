@@ -5,7 +5,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
-import { type ProductPriceHistory, CompleteProductPriceHistory } from '@/lib/db/schema/productPriceHistory'
+import {
+  type ProductPriceHistory,
+  CompleteProductPriceHistory,
+} from '@/lib/db/schema/productPriceHistory'
 import Modal from '@/components/shared/Modal'
 import { type Product, type ProductId } from '@/lib/db/schema/products'
 import { useOptimisticProductPriceHistories } from '@/app/(app)/product-price-history/useOptimisticProductPriceHistory'
@@ -24,15 +27,16 @@ export default function ProductPriceHistoryList({
   products: Product[]
   productId?: ProductId
 }) {
-  const { optimisticProductPriceHistories, addOptimisticProductPriceHistory } = useOptimisticProductPriceHistories(
-    productPriceHistory,
-    products
-  )
+  const { optimisticProductPriceHistories, addOptimisticProductPriceHistory } =
+    useOptimisticProductPriceHistories(productPriceHistory, products)
   const [open, setOpen] = useState(false)
-  const [activeProductPriceHistory, setActiveProductPriceHistory] = useState<ProductPriceHistory | null>(null)
+  const [activeProductPriceHistory, setActiveProductPriceHistory] =
+    useState<ProductPriceHistory | null>(null)
   const openModal = (productPriceHistory?: ProductPriceHistory) => {
     setOpen(true)
-    productPriceHistory ? setActiveProductPriceHistory(productPriceHistory) : setActiveProductPriceHistory(null)
+    productPriceHistory
+      ? setActiveProductPriceHistory(productPriceHistory)
+      : setActiveProductPriceHistory(null)
   }
   const closeModal = () => setOpen(false)
 
@@ -41,7 +45,11 @@ export default function ProductPriceHistoryList({
       <Modal
         open={open}
         setOpen={setOpen}
-        title={activeProductPriceHistory ? 'Edit ProductPriceHistory' : 'Create Product Price History'}
+        title={
+          activeProductPriceHistory
+            ? 'Edit ProductPriceHistory'
+            : 'Create Product Price History'
+        }
       >
         <ProductPriceHistoryForm
           productPriceHistory={activeProductPriceHistory}
@@ -53,10 +61,7 @@ export default function ProductPriceHistoryList({
         />
       </Modal>
       <div className='absolute right-0 top-0 '>
-        <Button
-          onClick={() => openModal()}
-          variant={'outline'}
-        >
+        <Button onClick={() => openModal()} variant={'outline'}>
           +
         </Button>
       </div>
@@ -88,19 +93,22 @@ const ProductPriceHistory = ({
   const deleting = productPriceHistory.id === 'delete'
   const mutating = optimistic || deleting
   const pathname = usePathname()
-  const basePath = pathname.includes('product-price-history') ? pathname : pathname + '/product-price-history/'
+  const basePath = pathname.includes('product-price-history')
+    ? pathname
+    : pathname + '/product-price-history/'
 
   return (
     <li
-      className={cn('flex justify-between my-2', mutating ? 'opacity-30 animate-pulse' : '', deleting ? 'text-destructive' : '')}
+      className={cn(
+        'flex justify-between my-2',
+        mutating ? 'opacity-30 animate-pulse' : '',
+        deleting ? 'text-destructive' : ''
+      )}
     >
       <div className='w-full'>
         <div>{productPriceHistory.productId}</div>
       </div>
-      <Button
-        variant={'link'}
-        asChild
-      >
+      <Button variant={'link'} asChild>
         <Link href={basePath + '/' + productPriceHistory.id}>Edit</Link>
       </Button>
     </li>
@@ -110,8 +118,12 @@ const ProductPriceHistory = ({
 const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
   return (
     <div className='text-center'>
-      <h3 className='mt-2 text-sm font-semibold text-secondary-foreground'>No product price history</h3>
-      <p className='mt-1 text-sm text-muted-foreground'>Get started by creating a new product price history.</p>
+      <h3 className='mt-2 text-sm font-semibold text-secondary-foreground'>
+        No product price history
+      </h3>
+      <p className='mt-1 text-sm text-muted-foreground'>
+        Get started by creating a new product price history.
+      </p>
       <div className='mt-6'>
         <Button onClick={() => openModal()}>
           <PlusIcon className='h-4' /> New Product Price History{' '}

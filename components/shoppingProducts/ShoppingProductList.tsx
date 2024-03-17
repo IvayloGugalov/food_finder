@@ -5,7 +5,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
-import { type ShoppingProduct, CompleteShoppingProduct } from '@/lib/db/schema/shoppingProducts'
+import {
+  type ShoppingProduct,
+  CompleteShoppingProduct,
+} from '@/lib/db/schema/shoppingProducts'
 import Modal from '@/components/shared/Modal'
 import { type Product, type ProductId } from '@/lib/db/schema/products'
 import { type ShoppingList, type ShoppingListId } from '@/lib/db/schema/shoppingLists'
@@ -32,10 +35,13 @@ export default function ShoppingProductList({
   const { optimisticShoppingProducts, addOptimisticShoppingProduct } =
     useOptimisticShoppingProducts(shoppingProducts, products, shoppingLists)
   const [open, setOpen] = useState(false)
-  const [activeShoppingProduct, setActiveShoppingProduct] = useState<ShoppingProduct | null>(null)
+  const [activeShoppingProduct, setActiveShoppingProduct] =
+    useState<ShoppingProduct | null>(null)
   const openModal = (shoppingProduct?: ShoppingProduct) => {
     setOpen(true)
-    shoppingProduct ? setActiveShoppingProduct(shoppingProduct) : setActiveShoppingProduct(null)
+    shoppingProduct
+      ? setActiveShoppingProduct(shoppingProduct)
+      : setActiveShoppingProduct(null)
   }
   const closeModal = () => setOpen(false)
 
@@ -44,7 +50,9 @@ export default function ShoppingProductList({
       <Modal
         open={open}
         setOpen={setOpen}
-        title={activeShoppingProduct ? 'Edit ShoppingProduct' : 'Create Shopping Product'}
+        title={
+          activeShoppingProduct ? 'Edit ShoppingProduct' : 'Create Shopping Product'
+        }
       >
         <ShoppingProductForm
           shoppingProduct={activeShoppingProduct}
@@ -115,7 +123,9 @@ const ShoppingProduct = ({
 const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
   return (
     <div className='text-center'>
-      <h3 className='mt-2 text-sm font-semibold text-secondary-foreground'>No shopping products</h3>
+      <h3 className='mt-2 text-sm font-semibold text-secondary-foreground'>
+        No shopping products
+      </h3>
       <p className='mt-1 text-sm text-muted-foreground'>
         Get started by creating a new shopping product.
       </p>

@@ -22,7 +22,9 @@ export const useOptimisticShoppingProducts = (
     ): CompleteShoppingProduct[] => {
       const { data } = action
 
-      const optimisticProduct = products.find((product) => product.id === data.productId)!
+      const optimisticProduct = products.find(
+        (product) => product.id === data.productId
+      )!
 
       const optimisticShoppingList = shoppingLists.find(
         (shoppingList) => shoppingList.id === data.shoppingListId

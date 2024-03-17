@@ -11,7 +11,11 @@ import Loading from '@/app/loading'
 
 export const revalidate = 0
 
-export default async function ShoppingListPage({ params }: { params: { shoppingListId: string } }) {
+export default async function ShoppingListPage({
+  params,
+}: {
+  params: { shoppingListId: string }
+}) {
   return (
     <main className='overflow-auto'>
       <ShoppingList id={params.shoppingListId} />
@@ -22,7 +26,8 @@ export default async function ShoppingListPage({ params }: { params: { shoppingL
 const ShoppingList = async ({ id }: { id: string }) => {
   await checkAuth()
 
-  const { shoppingList, shoppingProducts } = await getShoppingListByIdWithShoppingProducts(id)
+  const { shoppingList, shoppingProducts } =
+    await getShoppingListByIdWithShoppingProducts(id)
 
   if (!shoppingList) notFound()
   return (

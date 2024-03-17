@@ -15,7 +15,11 @@ import { Label } from '@/components/ui/label'
 import { useBackPath } from '@/components/shared/BackButton'
 
 import { type Supermarket, insertSupermarketParams } from '@/lib/db/schema/supermarkets'
-import { createSupermarketAction, deleteSupermarketAction, updateSupermarketAction } from '@/lib/actions/supermarkets'
+import {
+  createSupermarketAction,
+  deleteSupermarketAction,
+  updateSupermarketAction,
+} from '@/lib/actions/supermarkets'
 
 const SupermarketForm = ({
   supermarket,
@@ -31,7 +35,9 @@ const SupermarketForm = ({
   addOptimistic?: TAddOptimistic
   postSuccess?: () => void
 }) => {
-  const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<Supermarket>(insertSupermarketParams)
+  const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<Supermarket>(
+    insertSupermarketParams
+  )
   const editing = !!supermarket?.id
 
   const [isDeleting, setIsDeleting] = useState(false)
@@ -59,7 +65,9 @@ const SupermarketForm = ({
     setErrors(null)
 
     const payload = Object.fromEntries(data.entries())
-    const supermarketParsed = await insertSupermarketParams.safeParseAsync({ ...payload })
+    const supermarketParsed = await insertSupermarketParams.safeParseAsync({
+      ...payload,
+    })
     if (!supermarketParsed.success) {
       setErrors(supermarketParsed?.error.flatten().fieldErrors)
       return
@@ -99,29 +107,30 @@ const SupermarketForm = ({
   }
 
   return (
-    <form
-      action={handleSubmit}
-      onChange={handleChange}
-      className={'space-y-8'}
-    >
+    <form action={handleSubmit} onChange={handleChange} className={'space-y-8'}>
       {/* Schema fields start */}
       <div>
-        <Label className={cn('mb-2 inline-block', errors?.name ? 'text-destructive' : '')}>Name</Label>
+        <Label
+          className={cn('mb-2 inline-block', errors?.name ? 'text-destructive' : '')}
+        >
+          Name
+        </Label>
         <Input
           type='text'
           name='name'
           className={cn(errors?.name ? 'ring ring-destructive' : '')}
           defaultValue={supermarket?.name ?? ''}
         />
-        {errors?.name ? <p className='text-xs text-destructive mt-2'>{errors.name[0]}</p> : <div className='h-6' />}
+        {errors?.name ? (
+          <p className='text-xs text-destructive mt-2'>{errors.name[0]}</p>
+        ) : (
+          <div className='h-6' />
+        )}
       </div>
       {/* Schema fields end */}
 
       {/* Save Button */}
-      <SaveButton
-        errors={hasErrors}
-        editing={editing}
-      />
+      <SaveButton errors={hasErrors} editing={editing} />
 
       {/* Delete Button */}
       {editing ? (
@@ -165,7 +174,9 @@ const SaveButton = ({ editing, errors }: { editing: Boolean; errors: boolean }) 
       disabled={isCreating || isUpdating || errors}
       aria-disabled={isCreating || isUpdating || errors}
     >
-      {editing ? `Sav${isUpdating ? 'ing...' : 'e'}` : `Creat${isCreating ? 'ing...' : 'e'}`}
+      {editing
+        ? `Sav${isUpdating ? 'ing...' : 'e'}`
+        : `Creat${isCreating ? 'ing...' : 'e'}`}
     </Button>
   )
 }

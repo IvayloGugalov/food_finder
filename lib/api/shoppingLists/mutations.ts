@@ -42,7 +42,10 @@ export const updateShoppingList = async (
       .update(shoppingLists)
       .set({ ...newShoppingList, updatedAt: new Date() })
       .where(
-        and(eq(shoppingLists.id, shoppingListId!), eq(shoppingLists.userId, session?.user.id!))
+        and(
+          eq(shoppingLists.id, shoppingListId!),
+          eq(shoppingLists.userId, session?.user.id!)
+        )
       )
       .returning()
     return { shoppingList: s }
@@ -60,7 +63,10 @@ export const deleteShoppingList = async (id: ShoppingListId) => {
     const [s] = await db
       .delete(shoppingLists)
       .where(
-        and(eq(shoppingLists.id, shoppingListId!), eq(shoppingLists.userId, session?.user.id!))
+        and(
+          eq(shoppingLists.id, shoppingListId!),
+          eq(shoppingLists.userId, session?.user.id!)
+        )
       )
       .returning()
     return { shoppingList: s }

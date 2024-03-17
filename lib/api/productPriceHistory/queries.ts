@@ -1,6 +1,10 @@
 import { db } from '@/lib/db/index'
 import { eq } from 'drizzle-orm'
-import { type ProductPriceHistoryId, productPriceHistoryIdSchema, productPriceHistory } from '@/lib/db/schema/productPriceHistory'
+import {
+  type ProductPriceHistoryId,
+  productPriceHistoryIdSchema,
+  productPriceHistory,
+} from '@/lib/db/schema/productPriceHistory'
 import { products } from '@/lib/db/schema/products'
 
 export const getProductPriceHistories = async () => {

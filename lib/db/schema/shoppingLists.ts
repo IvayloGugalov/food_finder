@@ -31,7 +31,8 @@ export const shoppingLists = pgTable('shopping_lists', {
 // Schema for shoppingLists - used to validate API requests
 const baseSchema = createSelectSchema(shoppingLists).omit(timestamps)
 
-export const insertShoppingListSchema = createInsertSchema(shoppingLists).omit(timestamps)
+export const insertShoppingListSchema =
+  createInsertSchema(shoppingLists).omit(timestamps)
 export const insertShoppingListParams = baseSchema.omit({
   id: true,
   userId: true,
@@ -42,7 +43,10 @@ export const updateShoppingListParams = baseSchema.omit({
   userId: true,
 })
 export const shoppingListIdSchema = baseSchema.pick({ id: true })
-export const shoppingListDateSchema = baseSchema.pick({ weekDayStart: true, weekDayEnd: true })
+export const shoppingListDateSchema = baseSchema.pick({
+  weekDayStart: true,
+  weekDayEnd: true,
+})
 
 // Types for shoppingLists - used to type API request params and within Components
 export type ShoppingList = typeof shoppingLists.$inferSelect
@@ -52,4 +56,6 @@ export type UpdateShoppingListParams = z.infer<typeof updateShoppingListParams>
 export type ShoppingListId = z.infer<typeof shoppingListIdSchema>['id']
 
 // this type infers the return from getShoppingLists() - meaning it will include any joins
-export type CompleteShoppingList = Awaited<ReturnType<typeof getShoppingLists>>['shoppingLists'][number]
+export type CompleteShoppingList = Awaited<
+  ReturnType<typeof getShoppingLists>
+>['shoppingLists'][number]

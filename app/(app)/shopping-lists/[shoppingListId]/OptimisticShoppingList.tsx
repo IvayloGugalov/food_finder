@@ -9,14 +9,20 @@ import { Button } from '@/components/ui/button'
 import Modal from '@/components/shared/Modal'
 import ShoppingListForm from '@/components/shoppingLists/ShoppingListForm'
 
-export default function OptimisticShoppingList({ shoppingList }: { shoppingList: ShoppingList }) {
+export default function OptimisticShoppingList({
+  shoppingList,
+}: {
+  shoppingList: ShoppingList
+}) {
   const [open, setOpen] = useState(false)
   const openModal = (_?: ShoppingList) => {
     setOpen(true)
   }
   const closeModal = () => setOpen(false)
-  const [optimisticShoppingList, setOptimisticShoppingList] = useOptimistic(shoppingList)
-  const updateShoppingList: TAddOptimistic = (input) => setOptimisticShoppingList({ ...input.data })
+  const [optimisticShoppingList, setOptimisticShoppingList] =
+    useOptimistic(shoppingList)
+  const updateShoppingList: TAddOptimistic = (input) =>
+    setOptimisticShoppingList({ ...input.data })
 
   return (
     <div className='m-4'>

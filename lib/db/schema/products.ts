@@ -1,5 +1,13 @@
 import { sql } from 'drizzle-orm'
-import { varchar, real, text, date, timestamp, pgTable, uniqueIndex } from 'drizzle-orm/pg-core'
+import {
+  varchar,
+  real,
+  text,
+  date,
+  timestamp,
+  pgTable,
+  uniqueIndex,
+} from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { supermarkets } from './supermarkets'
@@ -70,4 +78,6 @@ export type UpdateProductParams = z.infer<typeof updateProductParams>
 export type ProductId = z.infer<typeof productIdSchema>['id']
 
 // this type infers the return from getProducts() - meaning it will include any joins
-export type CompleteProduct = Awaited<ReturnType<typeof getProducts>>['products'][number]
+export type CompleteProduct = Awaited<
+  ReturnType<typeof getProducts>
+>['products'][number]
