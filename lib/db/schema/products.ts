@@ -42,7 +42,7 @@ export const products = pgTable(
   },
   (products) => {
     return {
-      nameIndex: uniqueIndex('product_name_idx').on(products.name),
+      nameIndex: uniqueIndex('product_name_idx').on(products.name, products.supermarketId),
     }
   }
 )

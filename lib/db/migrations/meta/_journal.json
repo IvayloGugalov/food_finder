@@ -29,6 +29,13 @@
       "when": 1710672010112,
       "tag": "0003_perpetual_blackheart",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1711015879967,
+      "tag": "0004_fuzzy_jackpot",
+      "breakpoints": true
     }
   ]
 }
