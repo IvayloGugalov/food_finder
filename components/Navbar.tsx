@@ -13,7 +13,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
   return (
-    <div className='md:hidden border-b mb-4 pb-2 w-full'>
+    <div className='border-b mb-4 pb-2 w-full'>
       <nav className='flex justify-between w-full items-center'>
         <div className='font-semibold text-lg'>Logo</div>
         <Button variant='ghost' onClick={() => setOpen(!open)}>
@@ -33,7 +33,7 @@ export default function Navbar() {
                       : 'text-muted-foreground hover:text-primary'
                   }
                 >
-                  {link.title}
+                  {link.title}33
                 </Link>
               </li>
             ))}

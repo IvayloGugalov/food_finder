@@ -1,9 +1,9 @@
 'use client'
 
-import { MouseEventHandler, useEffect, useState } from 'react'
+import { MouseEventHandler, useEffect, useState, useTransition } from 'react'
 import Image from 'next/image'
 
-import { cn } from '@/lib/utils'
+import { Action, cn } from '@/lib/utils'
 import { type Product, CompleteProduct } from '@/lib/db/schema/products'
 import { type Supermarket } from '@/lib/db/schema/supermarkets'
 import { useOptimisticProducts } from '@/app/(app)/products/useOptimisticProducts'
@@ -24,8 +24,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
-import { useFormStatus } from 'react-dom'
-import { handleAddProdustToCurrentWeekShoppingList } from '@/lib/actions/products'
+import { handleAddProductToCurrentWeekShoppingList } from '@/lib/actions/products'
+import {
+  ShoppingProduct,
+  insertShoppingProductParams,
+} from '@/lib/db/schema/shoppingProducts'
+import { useValidatedForm } from '@/lib/hooks/useValidatedForm'
+import { useRouter } from 'next/navigation'
+import { useBackPath } from '../shared/BackButton'
+import { toast } from 'sonner'
+import { z } from 'zod'
 
 export default function ProductList({
   products,
@@ -34,15 +42,22 @@ export default function ProductList({
   products: CompleteProduct[]
   supermarkets: Supermarket[]
 }) {
+  const { errors, hasErrors, setErrors, handleChange } =
+    useValidatedForm<ShoppingProduct>(insertShoppingProductParams)
+  const [pending, startMutation] = useTransition()
+
   const { optimisticProducts, addOptimisticProduct } = useOptimisticProducts(
     products,
     supermarkets
   )
+  const router = useRouter()
+  const backpath = useBackPath('products')
+
   const [state, setState] = useState({
     // TODO: REMOVE!!!!
     selectedSupermarket: 'zun7p06i1uu4cu6x3joy1' as string,
     filteredProducts: [] as CompleteProduct[],
-    activeProduct: null,
+    productToAddToShoppingListId: '',
   })
 
   useEffect(() => {
@@ -82,6 +97,43 @@ export default function ProductList({
     return products.filter((p) => p.supermarket?.id === supermarketId)
   }
 
+  const onSuccess = (
+    action: Action,
+    data?: { error: string; values: CompleteProduct }
+  ) => {
+    const failed = Boolean(data?.error)
+    if (failed) {
+      toast.error(`Failed to ${action}`, {
+        description: data?.error ?? 'Error',
+      })
+    } else {
+      router.refresh()
+      toast.success(`ShoppingProduct ${action}d!`)
+      if (action === 'delete') router.push(backpath)
+    }
+  }
+
+  const handleSubmitProductToShoppingList = async (product: CompleteProduct) => {
+    try {
+      startMutation(async () => {
+        const error = await handleAddProductToCurrentWeekShoppingList(product)
+
+        const errorFormatted = {
+          error: error.values ?? 'Error',
+          values: product,
+        }
+        onSuccess(
+          error.action ? 'update' : 'create',
+          error.values ? errorFormatted : undefined
+        )
+      })
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        setErrors(e.flatten().fieldErrors)
+      }
+    }
+  }
+
   return (
     <div>
       <div className='absolute right-0 top-0 '>
@@ -113,11 +165,22 @@ export default function ProductList({
       ) : (
         <ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
           {state.filteredProducts.map((product) => (
-            <Product
-              product={product}
-              handleSubmit={() => handleAddProdustToCurrentWeekShoppingList(product)}
-              key={product.id}
-            />
+            <form key={product.id} onChange={handleChange}>
+              <Product
+                product={product}
+                handleSubmit={() => {
+                  setState((prevState) => ({
+                    ...prevState,
+                    productToAddToShoppingListId: product.id,
+                  }))
+                  handleSubmitProductToShoppingList(product)
+                }}
+                disabled={
+                  state.productToAddToShoppingListId === product.id &&
+                  (pending || hasErrors)
+                }
+              />
+            </form>
           ))}
         </ul>
       )}
@@ -128,9 +191,11 @@ export default function ProductList({
 const Product = ({
   product,
   handleSubmit,
+  disabled,
 }: {
   product: CompleteProduct
   handleSubmit: (payload: CompleteProduct) => void
+  disabled: boolean
 }) => (
   <Card className={cn('flex flex-col justify-between')}>
     <CardContent className='pt-4'>
@@ -155,14 +220,14 @@ const Product = ({
       <CardTitle>{product.name}</CardTitle>
       <CardDescription>{product.category}</CardDescription>
     </CardHeader>
-    <CardFooter className='py-[0.75rem] border-t-[1px] flex-row justify-between space-x-2'>
+    <CardFooter className='py-[0.75rem] lg:px-6 px-2 border-t-[1px] flex-row justify-between space-x-2'>
       <div className='flex flex-col gap-1'>
         <p className='text-lg font-medium leading-none'>{product.price} лв.</p>
         {product.oldPrice && (
           <p className='text-sm font-light text-slate-400'>{product.oldPrice} лв.</p>
         )}
       </div>
-      <SaveButton onClick={() => handleSubmit(product)} editing={false} />
+      <SaveButton onClick={() => handleSubmit(product)} disabled={disabled} />
     </CardFooter>
   </Card>
 )
@@ -184,24 +249,21 @@ const EmptyState = () => (
 )
 
 const SaveButton = ({
-  editing,
+  disabled,
   onClick,
 }: {
-  editing: boolean
+  disabled: boolean
   onClick: MouseEventHandler<HTMLButtonElement>
 }) => {
-  const { pending } = useFormStatus()
-  const isCreating = pending && editing === false
-  const isUpdating = pending && editing === true
   return (
     <Button
       type='submit'
       className='mr-2'
-      disabled={isCreating || isUpdating}
-      aria-disabled={isCreating || isUpdating}
+      disabled={disabled}
+      aria-disabled={disabled}
       onClick={onClick}
     >
-      {`Add${isCreating ? 'ing' : ''}`} to shopping list{`${isCreating ? '...' : ''}`}
+      {`Add${disabled ? 'ing' : ''}`} to shopping list{`${disabled ? '...' : ''}`}
     </Button>
   )
 }

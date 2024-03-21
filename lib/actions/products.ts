@@ -15,14 +15,17 @@ import {
   updateProductParams,
   CompleteProduct,
 } from '@/lib/db/schema/products'
-import { getShoppingListByCurrentDate } from '../api/shoppingLists/queries'
-import { ShoppingList } from '../db/schema/shoppingLists'
-import { getStartAndEndDateOfCurrentWeek, getUtcNow } from '../utils/dateExt'
+import { getShoppingListByCurrentDate } from '@/lib/api/shoppingLists/queries'
+import { ShoppingList } from '@/lib/db/schema/shoppingLists'
+import { getStartAndEndDateOfCurrentWeek, getUtcNow } from '@/lib/utils/dateExt'
 import { createShoppingListAction } from './shoppingLists'
-import { createShoppingProductAction } from './shoppingProducts'
-import { getShoppingProductByProductAndShoppingListId } from '../api/shoppingProducts/queries'
-import { updateShoppingProduct } from '../api/shoppingProducts/mutations'
-import { updateShoppingProductParams } from '../db/schema/shoppingProducts'
+import {
+  createShoppingProductAction,
+  updateShoppingProductAction,
+} from './shoppingProducts'
+import { getShoppingProductByProductAndShoppingListId } from '@/lib/api/shoppingProducts/queries'
+import { updateShoppingProductParams } from '@/lib/db/schema/shoppingProducts'
+import { Action } from '@/lib/utils'
 
 const handleErrors = (e: unknown) => {
   const errMsg = 'Error, please try again.'
@@ -66,7 +69,7 @@ export const deleteProductAction = async (input: ProductId) => {
   }
 }
 
-export const handleAddProdustToCurrentWeekShoppingList = async (
+export const handleAddProductToCurrentWeekShoppingList = async (
   product: CompleteProduct
 ) => {
   const { startDate, endDate } = getStartAndEndDateOfCurrentWeek()
@@ -86,17 +89,12 @@ export const handleAddProdustToCurrentWeekShoppingList = async (
     try {
       const result = await createShoppingListAction(pendingShoppingList)
 
-      const errorFormatted = {
-        error: result ?? 'Error',
-        values: pendingShoppingList,
-      }
       if (typeof result === 'string') {
-        return result
+        return { values: handleErrors(result), action: 'update' }
       }
       shoppingList = result.shoppingList
     } catch (e) {
-      console.error(e)
-      return
+      return { values: handleErrors(e), action: 'update' }
     }
   }
 
@@ -105,18 +103,35 @@ export const handleAddProdustToCurrentWeekShoppingList = async (
     shoppingList.id
   )
 
-  if (shoppingProduct) {
-    const payload = updateShoppingProductParams.parse({
-      ...shoppingProduct,
-      quantity: ++shoppingProduct.quantity,
-    })
+  let result
+  let pendingShoppingProduct = shoppingProduct
+  try {
+    if (shoppingProduct) {
+      const payload = updateShoppingProductParams.parse({
+        ...shoppingProduct,
+        quantity: ++shoppingProduct.quantity,
+      })
 
-    await updateShoppingProduct(shoppingList.id, payload)
-  } else {
-    await createShoppingProductAction({
-      productId: product.id,
-      shoppingListId: shoppingList.id,
-      quantity: 1,
-    })
+      // ALWAYS USE THE PAYLOAD ID AS THE REFERENCES SHOULD BE THE SAME !!!!!!!!
+      result = { values: await updateShoppingProductAction(payload), action: 'update' }
+    } else {
+      pendingShoppingProduct = {
+        id: '',
+        productId: product.id,
+        shoppingListId: shoppingList.id,
+        quantity: 1,
+      }
+      result = {
+        values: await createShoppingProductAction(pendingShoppingProduct),
+        action: 'create',
+      }
+    }
+
+    return result
+  } catch (e) {
+    return {
+      values: handleErrors(e),
+      action: pendingShoppingProduct ? 'create' : 'update',
+    }
   }
 }

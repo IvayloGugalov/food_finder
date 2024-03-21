@@ -30,7 +30,6 @@ export const updateShoppingProduct = async (
 ) => {
   const { id: shoppingProductId } = shoppingProductIdSchema.parse({ id })
   const newShoppingProduct = updateShoppingProductSchema.parse(shoppingProduct)
-  console.log(newShoppingProduct)
 
   try {
     const [s] = await db
@@ -38,7 +37,6 @@ export const updateShoppingProduct = async (
       .set(newShoppingProduct)
       .where(eq(shoppingProducts.id, shoppingProductId!))
       .returning()
-    console.log(s)
 
     return { shoppingProduct: s }
   } catch (err) {

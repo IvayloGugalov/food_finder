@@ -42,7 +42,6 @@ export const updateShoppingProductAction = async (
 ) => {
   try {
     const payload = updateShoppingProductParams.parse(input)
-    console.log(payload)
     await updateShoppingProduct(payload.id, payload)
     revalidateShoppingProducts()
   } catch (e) {
