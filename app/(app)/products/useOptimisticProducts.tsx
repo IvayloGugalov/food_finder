@@ -1,9 +1,9 @@
-import { type Supermarket } from "@/lib/db/schema/supermarkets";
-import { type Product, type CompleteProduct } from "@/lib/db/schema/products";
-import { OptimisticAction } from "@/lib/utils";
-import { useOptimistic } from "react";
+import { type Supermarket } from '@/lib/db/schema/supermarkets'
+import { type Product, type CompleteProduct } from '@/lib/db/schema/products'
+import { OptimisticAction } from '@/lib/utils'
+import { useOptimistic } from 'react'
 
-export type TAddOptimistic = (action: OptimisticAction<Product>) => void;
+export type TAddOptimistic = (action: OptimisticAction<Product>) => void
 
 export const useOptimisticProducts = (
   products: CompleteProduct[],
@@ -13,38 +13,38 @@ export const useOptimisticProducts = (
     products,
     (
       currentState: CompleteProduct[],
-      action: OptimisticAction<Product>,
+      action: OptimisticAction<Product>
     ): CompleteProduct[] => {
-      const { data } = action;
+      const { data } = action
 
       const optimisticSupermarket = supermarkets.find(
-        (supermarket) => supermarket.id === data.supermarketId,
-      )!;
+        (supermarket) => supermarket.id === data.supermarketId
+      )!
 
       const optimisticProduct = {
         ...data,
         supermarket: optimisticSupermarket,
-        id: "optimistic",
-      };
+        id: 'optimistic',
+      }
 
       switch (action.action) {
-        case "create":
+        case 'create':
           return currentState.length === 0
             ? [optimisticProduct]
-            : [...currentState, optimisticProduct];
-        case "update":
+            : [...currentState, optimisticProduct]
+        case 'update':
           return currentState.map((item) =>
-            item.id === data.id ? { ...item, ...optimisticProduct } : item,
-          );
-        case "delete":
+            item.id === data.id ? { ...item, ...optimisticProduct } : item
+          )
+        case 'delete':
           return currentState.map((item) =>
-            item.id === data.id ? { ...item, id: "delete" } : item,
-          );
+            item.id === data.id ? { ...item, id: 'delete' } : item
+          )
         default:
-          return currentState;
+          return currentState
       }
-    },
-  );
+    }
+  )
 
-  return { addOptimisticProduct, optimisticProducts };
-};
+  return { addOptimisticProduct, optimisticProducts }
+}

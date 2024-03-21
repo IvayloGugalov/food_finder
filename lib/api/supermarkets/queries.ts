@@ -1,7 +1,11 @@
 import { db } from '@/lib/db/index'
 import { eq, and } from 'drizzle-orm'
 import { getUserAuth } from '@/lib/auth/utils'
-import { type SupermarketId, supermarketIdSchema, supermarkets } from '@/lib/db/schema/supermarkets'
+import {
+  type SupermarketId,
+  supermarketIdSchema,
+  supermarkets,
+} from '@/lib/db/schema/supermarkets'
 import { products, type CompleteProduct } from '@/lib/db/schema/products'
 
 export const getSupermarkets = async () => {
@@ -30,7 +34,9 @@ export const getSupermarketByIdWithProducts = async (id: SupermarketId) => {
     .leftJoin(products, eq(supermarkets.id, products.supermarketId))
   if (rows.length === 0) return {}
   const s = rows[0].supermarket
-  const sp = rows.filter((r) => r.product !== null).map((p) => p.product) as CompleteProduct[]
+  const sp = rows
+    .filter((r) => r.product !== null)
+    .map((p) => p.product) as CompleteProduct[]
 
   return { supermarket: s, products: sp }
 }

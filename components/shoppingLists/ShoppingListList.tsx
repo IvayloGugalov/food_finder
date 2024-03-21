@@ -1,56 +1,53 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
-import { cn } from "@/lib/utils";
-import { type ShoppingList, CompleteShoppingList } from "@/lib/db/schema/shoppingLists";
-import Modal from "@/components/shared/Modal";
+import { cn } from '@/lib/utils'
+import { type ShoppingList, CompleteShoppingList } from '@/lib/db/schema/shoppingLists'
+import Modal from '@/components/shared/Modal'
 
-import { useOptimisticShoppingLists } from "@/app/(app)/shopping-lists/useOptimisticShoppingLists";
-import { Button } from "@/components/ui/button";
-import ShoppingListForm from "./ShoppingListForm";
-import { PlusIcon } from "lucide-react";
+import { useOptimisticShoppingLists } from '@/app/(app)/shopping-lists/useOptimisticShoppingLists'
+import { Button } from '@/components/ui/button'
+import ShoppingListForm from './ShoppingListForm'
+import { PlusIcon } from 'lucide-react'
 
-type TOpenModal = (shoppingList?: ShoppingList) => void;
+type TOpenModal = (shoppingList?: ShoppingList) => void
 
 export default function ShoppingListList({
   shoppingLists,
-   
 }: {
-  shoppingLists: CompleteShoppingList[];
-   
+  shoppingLists: CompleteShoppingList[]
 }) {
-  const { optimisticShoppingLists, addOptimisticShoppingList } = useOptimisticShoppingLists(
-    shoppingLists,
-     
-  );
-  const [open, setOpen] = useState(false);
-  const [activeShoppingList, setActiveShoppingList] = useState<ShoppingList | null>(null);
+  const { optimisticShoppingLists, addOptimisticShoppingList } =
+    useOptimisticShoppingLists(shoppingLists)
+  const [open, setOpen] = useState(false)
+  const [activeShoppingList, setActiveShoppingList] = useState<ShoppingList | null>(
+    null
+  )
   const openModal = (shoppingList?: ShoppingList) => {
-    setOpen(true);
-    shoppingList ? setActiveShoppingList(shoppingList) : setActiveShoppingList(null);
-  };
-  const closeModal = () => setOpen(false);
+    setOpen(true)
+    shoppingList ? setActiveShoppingList(shoppingList) : setActiveShoppingList(null)
+  }
+  const closeModal = () => setOpen(false)
 
   return (
     <div>
       <Modal
         open={open}
         setOpen={setOpen}
-        title={activeShoppingList ? "Edit ShoppingList" : "Create Shopping List"}
+        title={activeShoppingList ? 'Edit ShoppingList' : 'Create Shopping List'}
       >
         <ShoppingListForm
           shoppingList={activeShoppingList}
           addOptimistic={addOptimisticShoppingList}
           openModal={openModal}
           closeModal={closeModal}
-          
         />
       </Modal>
-      <div className="absolute right-0 top-0 ">
-        <Button onClick={() => openModal()} variant={"outline"}>
+      <div className='absolute right-0 top-0 '>
+        <Button onClick={() => openModal()} variant={'outline'}>
           +
         </Button>
       </div>
@@ -68,58 +65,56 @@ export default function ShoppingListList({
         </ul>
       )}
     </div>
-  );
+  )
 }
 
 const ShoppingList = ({
   shoppingList,
   openModal,
 }: {
-  shoppingList: CompleteShoppingList;
-  openModal: TOpenModal;
+  shoppingList: CompleteShoppingList
+  openModal: TOpenModal
 }) => {
-  const optimistic = shoppingList.id === "optimistic";
-  const deleting = shoppingList.id === "delete";
-  const mutating = optimistic || deleting;
-  const pathname = usePathname();
-  const basePath = pathname.includes("shopping-lists")
+  const optimistic = shoppingList.id === 'optimistic'
+  const deleting = shoppingList.id === 'delete'
+  const mutating = optimistic || deleting
+  const pathname = usePathname()
+  const basePath = pathname.includes('shopping-lists')
     ? pathname
-    : pathname + "/shopping-lists/";
-
+    : pathname + '/shopping-lists/'
 
   return (
     <li
       className={cn(
-        "flex justify-between my-2",
-        mutating ? "opacity-30 animate-pulse" : "",
-        deleting ? "text-destructive" : "",
+        'flex justify-between my-2',
+        mutating ? 'opacity-30 animate-pulse' : '',
+        deleting ? 'text-destructive' : ''
       )}
     >
-      <div className="w-full">
+      <div className='w-full'>
         <div>{shoppingList.description}</div>
       </div>
-      <Button variant={"link"} asChild>
-        <Link href={ basePath + "/" + shoppingList.id }>
-          Edit
-        </Link>
+      <Button variant={'link'} asChild>
+        <Link href={basePath + '/' + shoppingList.id}>Edit</Link>
       </Button>
     </li>
-  );
-};
+  )
+}
 
 const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
   return (
-    <div className="text-center">
-      <h3 className="mt-2 text-sm font-semibold text-secondary-foreground">
+    <div className='text-center'>
+      <h3 className='mt-2 text-sm font-semibold text-secondary-foreground'>
         No shopping lists
       </h3>
-      <p className="mt-1 text-sm text-muted-foreground">
+      <p className='mt-1 text-sm text-muted-foreground'>
         Get started by creating a new shopping list.
       </p>
-      <div className="mt-6">
+      <div className='mt-6'>
         <Button onClick={() => openModal()}>
-          <PlusIcon className="h-4" /> New Shopping Lists </Button>
+          <PlusIcon className='h-4' /> New Shopping Lists{' '}
+        </Button>
       </div>
     </div>
-  );
-};
+  )
+}

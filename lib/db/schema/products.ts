@@ -1,5 +1,13 @@
 import { sql } from 'drizzle-orm'
-import { varchar, real, text, date, timestamp, pgTable, uniqueIndex } from 'drizzle-orm/pg-core'
+import {
+  varchar,
+  real,
+  text,
+  date,
+  timestamp,
+  pgTable,
+  uniqueIndex,
+} from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { supermarkets } from './supermarkets'
@@ -34,7 +42,7 @@ export const products = pgTable(
   },
   (products) => {
     return {
-      nameIndex: uniqueIndex('product_name_idx').on(products.name),
+      nameIndex: uniqueIndex('product_name_idx').on(products.name, products.supermarketId),
     }
   }
 )
@@ -47,8 +55,6 @@ export const insertProductParams = baseSchema
   .extend({
     price: z.coerce.number(),
     oldPrice: z.coerce.number(),
-    validFrom: z.coerce.string().min(1),
-    validUntil: z.coerce.string().min(1),
     supermarketId: z.coerce.string().min(1),
   })
   .omit({
@@ -59,8 +65,6 @@ export const updateProductSchema = baseSchema
 export const updateProductParams = baseSchema.extend({
   price: z.coerce.number(),
   oldPrice: z.coerce.number(),
-  validFrom: z.coerce.string().min(1),
-  validUntil: z.coerce.string().min(1),
   supermarketId: z.coerce.string().min(1),
 })
 
@@ -74,4 +78,6 @@ export type UpdateProductParams = z.infer<typeof updateProductParams>
 export type ProductId = z.infer<typeof productIdSchema>['id']
 
 // this type infers the return from getProducts() - meaning it will include any joins
-export type CompleteProduct = Awaited<ReturnType<typeof getProducts>>['products'][number]
+export type CompleteProduct = Awaited<
+  ReturnType<typeof getProducts>
+>['products'][number]

@@ -9,21 +9,23 @@ import { Button } from '@/components/ui/button'
 import Modal from '@/components/shared/Modal'
 import SupermarketForm from '@/components/supermarkets/SupermarketForm'
 
-export default function OptimisticSupermarket({ supermarket }: { supermarket: Supermarket }) {
+export default function OptimisticSupermarket({
+  supermarket,
+}: {
+  supermarket: Supermarket
+}) {
   const [open, setOpen] = useState(false)
   const openModal = (_?: Supermarket) => {
     setOpen(true)
   }
   const closeModal = () => setOpen(false)
   const [optimisticSupermarket, setOptimisticSupermarket] = useOptimistic(supermarket)
-  const updateSupermarket: TAddOptimistic = (input) => setOptimisticSupermarket({ ...input.data })
+  const updateSupermarket: TAddOptimistic = (input) =>
+    setOptimisticSupermarket({ ...input.data })
 
   return (
     <div className='m-4'>
-      <Modal
-        open={open}
-        setOpen={setOpen}
-      >
+      <Modal open={open} setOpen={setOpen}>
         <SupermarketForm
           supermarket={optimisticSupermarket}
           closeModal={closeModal}
@@ -33,10 +35,7 @@ export default function OptimisticSupermarket({ supermarket }: { supermarket: Su
       </Modal>
       <div className='flex justify-between items-end mb-4'>
         <h1 className='font-semibold text-2xl'>{optimisticSupermarket.name}</h1>
-        <Button
-          className=''
-          onClick={() => setOpen(true)}
-        >
+        <Button className='' onClick={() => setOpen(true)}>
           Edit
         </Button>
       </div>

@@ -1,6 +1,6 @@
 {
-  "id": "2bab00c0-bb76-448f-a67b-44ed3cfd3850",
-  "prevId": "121e1a9e-674b-4c89-86f5-b7bf0d4ebef8",
+  "id": "10c945b5-52c4-487f-ae47-dd9790b7c08f",
+  "prevId": "be4a824f-9b77-427e-9bc7-9726e22fca62",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -250,11 +250,19 @@
           "primaryKey": false,
           "notNull": true
         },
-        "week_period": {
-          "name": "week_period",
-          "type": "interval",
+        "week_day_start": {
+          "name": "week_day_start",
+          "type": "timestamp",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "now()"
+        },
+        "week_day_end": {
+          "name": "week_day_end",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         },
         "user_id": {
           "name": "user_id",
@@ -291,6 +299,13 @@
           "type": "varchar(191)",
           "primaryKey": true,
           "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 1
         },
         "product_id": {
           "name": "product_id",

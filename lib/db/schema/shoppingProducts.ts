@@ -1,4 +1,4 @@
-import { varchar, pgTable } from 'drizzle-orm/pg-core'
+import { varchar, smallint, pgTable } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { products } from './products'
@@ -11,6 +11,7 @@ export const shoppingProducts = pgTable('shopping_products', {
   id: varchar('id', { length: 191 })
     .primaryKey()
     .$defaultFn(() => nanoid()),
+  quantity: smallint('quantity').notNull().default(1),
   productId: varchar('product_id', { length: 256 })
     .references(() => products.id)
     .notNull(),
@@ -25,6 +26,7 @@ const baseSchema = createSelectSchema(shoppingProducts)
 export const insertShoppingProductSchema = createInsertSchema(shoppingProducts)
 export const insertShoppingProductParams = baseSchema
   .extend({
+    quantity: z.coerce.number(),
     productId: z.coerce.string().min(1),
     shoppingListId: z.coerce.string().min(1),
   })
@@ -34,10 +36,15 @@ export const insertShoppingProductParams = baseSchema
 
 export const updateShoppingProductSchema = baseSchema
 export const updateShoppingProductParams = baseSchema.extend({
+  quantity: z.coerce.number().min(1),
   productId: z.coerce.string().min(1),
   shoppingListId: z.coerce.string().min(1),
 })
 export const shoppingProductIdSchema = baseSchema.pick({ id: true })
+export const shoppingProductProductAndShoppingListIdSchema = baseSchema.pick({
+  productId: true,
+  shoppingListId: true,
+})
 
 // Types for shoppingProducts - used to type API request params and within Components
 export type ShoppingProduct = typeof shoppingProducts.$inferSelect
@@ -47,4 +54,6 @@ export type UpdateShoppingProductParams = z.infer<typeof updateShoppingProductPa
 export type ShoppingProductId = z.infer<typeof shoppingProductIdSchema>['id']
 
 // this type infers the return from getShoppingProducts() - meaning it will include any joins
-export type CompleteShoppingProduct = Awaited<ReturnType<typeof getShoppingProducts>>['shoppingProducts'][number]
+export type CompleteShoppingProduct = Awaited<
+  ReturnType<typeof getShoppingProducts>
+>['shoppingProducts'][number]

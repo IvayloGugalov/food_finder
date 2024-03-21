@@ -26,7 +26,8 @@ export default function OptimisticProduct({
   }
   const closeModal = () => setOpen(false)
   const [optimisticProduct, setOptimisticProduct] = useOptimistic(product)
-  const updateProduct: TAddOptimistic = (input) => setOptimisticProduct({ ...input.data })
+  const updateProduct: TAddOptimistic = (input) =>
+    setOptimisticProduct({ ...input.data })
 
   return (
     <div className='m-4'>
@@ -45,10 +46,7 @@ export default function OptimisticProduct({
       </Modal> */}
       <div className='flex justify-between items-end mb-4'>
         <h1 className='font-semibold text-2xl'>{optimisticProduct.name}</h1>
-        <Button
-          className=''
-          onClick={() => setOpen(true)}
-        >
+        <Button className='' onClick={() => setOpen(true)}>
           Edit
         </Button>
       </div>

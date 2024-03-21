@@ -20,6 +20,12 @@ const nextConfig = {
         port: '',
         pathname: '/is/image/schwarz/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'webassets.kaufland.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 }

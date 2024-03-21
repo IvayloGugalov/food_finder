@@ -19,8 +19,15 @@ import { CalendarIcon } from 'lucide-react'
 import { Calendar } from '@/components/ui/calendar'
 import { format } from 'date-fns'
 
-import { type ShoppingList, insertShoppingListParams } from '@/lib/db/schema/shoppingLists'
-import { createShoppingListAction, deleteShoppingListAction, updateShoppingListAction } from '@/lib/actions/shoppingLists'
+import {
+  type ShoppingList,
+  insertShoppingListParams,
+} from '@/lib/db/schema/shoppingLists'
+import {
+  createShoppingListAction,
+  deleteShoppingListAction,
+  updateShoppingListAction,
+} from '@/lib/actions/shoppingLists'
 
 const ShoppingListForm = ({
   shoppingList,
@@ -35,9 +42,16 @@ const ShoppingListForm = ({
   addOptimistic?: TAddOptimistic
   postSuccess?: () => void
 }) => {
-  const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<ShoppingList>(insertShoppingListParams)
+  const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<ShoppingList>(
+    insertShoppingListParams
+  )
   const editing = !!shoppingList?.id
-  const [weekPeriod, setWeekPeriod] = useState<Date | undefined>(shoppingList?.weekPeriod)
+  const [weekDayStart, setweekDayStart] = useState<Date | undefined>(
+    new Date(shoppingList?.weekDayStart ?? '')
+  )
+  const [weekDayEnd, setweekDayEnd] = useState<Date | undefined>(
+    new Date(shoppingList?.weekDayEnd ?? '')
+  )
 
   const [isDeleting, setIsDeleting] = useState(false)
   const [pending, startMutation] = useTransition()
@@ -45,7 +59,10 @@ const ShoppingListForm = ({
   const router = useRouter()
   const backpath = useBackPath('shopping-lists')
 
-  const onSuccess = (action: Action, data?: { error: string; values: ShoppingList }) => {
+  const onSuccess = (
+    action: Action,
+    data?: { error: string; values: ShoppingList }
+  ) => {
     const failed = Boolean(data?.error)
     if (failed) {
       openModal && openModal(data?.values)
@@ -64,7 +81,9 @@ const ShoppingListForm = ({
     setErrors(null)
 
     const payload = Object.fromEntries(data.entries())
-    const shoppingListParsed = await insertShoppingListParams.safeParseAsync({ ...payload })
+    const shoppingListParsed = await insertShoppingListParams.safeParseAsync({
+      ...payload,
+    })
     if (!shoppingListParsed.success) {
       setErrors(shoppingListParsed?.error.flatten().fieldErrors)
       return
@@ -105,65 +124,135 @@ const ShoppingListForm = ({
   }
 
   return (
-    <form
-      action={handleSubmit}
-      onChange={handleChange}
-      className={'space-y-8'}
-    >
+    <form action={handleSubmit} onChange={handleChange} className={'space-y-8'}>
       {/* Schema fields start */}
       <div>
-        <Label className={cn('mb-2 inline-block', errors?.description ? 'text-destructive' : '')}>Description</Label>
+        <Label
+          className={cn(
+            'mb-2 inline-block',
+            errors?.description ? 'text-destructive' : ''
+          )}
+        >
+          Description
+        </Label>
         <Input
           type='text'
           name='description'
           className={cn(errors?.description ? 'ring ring-destructive' : '')}
           defaultValue={shoppingList?.description ?? ''}
         />
-        {errors?.description ? <p className='text-xs text-destructive mt-2'>{errors.description[0]}</p> : <div className='h-6' />}
+        {errors?.description ? (
+          <p className='text-xs text-destructive mt-2'>{errors.description[0]}</p>
+        ) : (
+          <div className='h-6' />
+        )}
       </div>
       <div>
-        <Label className={cn('mb-2 inline-block', errors?.weekPeriod ? 'text-destructive' : '')}>Week Period</Label>
+        <Label
+          className={cn(
+            'mb-2 inline-block',
+            errors?.weekDayStart ? 'text-destructive' : ''
+          )}
+        >
+          Week Period
+        </Label>
         <br />
         <Popover>
           <Input
-            name='weekPeriod'
+            name='weekDayStart'
             onChange={() => {}}
             readOnly
-            value={weekPeriod?.toUTCString() ?? new Date().toUTCString()}
+            value={weekDayStart?.toUTCString() ?? new Date().toUTCString()}
             className='hidden'
           />
 
           <PopoverTrigger asChild>
             <Button
               variant={'outline'}
-              className={cn('w-[240px] pl-3 text-left font-normal', !shoppingList?.weekPeriod && 'text-muted-foreground')}
+              className={cn(
+                'w-[240px] pl-3 text-left font-normal',
+                !shoppingList?.weekDayStart && 'text-muted-foreground'
+              )}
             >
-              {weekPeriod ? <span>{format(weekPeriod, 'PPP')}</span> : <span>Pick a date</span>}
+              {weekDayStart ? (
+                <span>{format(weekDayStart, 'PPP')}</span>
+              ) : (
+                <span>Pick a date</span>
+              )}
               <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
             </Button>
           </PopoverTrigger>
-          <PopoverContent
-            className='w-auto p-0'
-            align='start'
-          >
+          <PopoverContent className='w-auto p-0' align='start'>
             <Calendar
               mode='single'
-              onSelect={(e) => setWeekPeriod(e)}
-              selected={weekPeriod}
+              onSelect={(e) => setweekDayStart(e)}
+              selected={weekDayStart}
               disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
               initialFocus
             />
           </PopoverContent>
         </Popover>
-        {errors?.weekPeriod ? <p className='text-xs text-destructive mt-2'>{errors.weekPeriod[0]}</p> : <div className='h-6' />}
+        {errors?.weekDayStart ? (
+          <p className='text-xs text-destructive mt-2'>{errors.weekDayStart[0]}</p>
+        ) : (
+          <div className='h-6' />
+        )}
+      </div>
+      <div>
+        <Label
+          className={cn(
+            'mb-2 inline-block',
+            errors?.weekDayEnd ? 'text-destructive' : ''
+          )}
+        >
+          Week Period
+        </Label>
+        <br />
+        <Popover>
+          <Input
+            name='weekDayEnd'
+            onChange={() => {}}
+            readOnly
+            value={weekDayEnd?.toUTCString() ?? new Date().toUTCString()}
+            className='hidden'
+          />
+
+          <PopoverTrigger asChild>
+            <Button
+              variant={'outline'}
+              className={cn(
+                'w-[240px] pl-3 text-left font-normal',
+                !shoppingList?.weekDayEnd && 'text-muted-foreground'
+              )}
+            >
+              {weekDayEnd ? (
+                <span>{format(weekDayEnd, 'PPP')}</span>
+              ) : (
+                <span>Pick a date</span>
+              )}
+              <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className='w-auto p-0' align='start'>
+            <Calendar
+              mode='single'
+              onSelect={(e) => setweekDayEnd(e)}
+              selected={weekDayEnd}
+              disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+        {errors?.weekDayEnd ? (
+          <p className='text-xs text-destructive mt-2'>{errors.weekDayEnd[0]}</p>
+        ) : (
+          <div className='h-6' />
+        )}
       </div>
       {/* Schema fields end */}
 
       {/* Save Button */}
-      <SaveButton
-        errors={hasErrors}
-        editing={editing}
-      />
+      <SaveButton errors={hasErrors} editing={editing} />
 
       {/* Delete Button */}
       {editing ? (
@@ -207,7 +296,9 @@ const SaveButton = ({ editing, errors }: { editing: Boolean; errors: boolean }) 
       disabled={isCreating || isUpdating || errors}
       aria-disabled={isCreating || isUpdating || errors}
     >
-      {editing ? `Sav${isUpdating ? 'ing...' : 'e'}` : `Creat${isCreating ? 'ing...' : 'e'}`}
+      {editing
+        ? `Sav${isUpdating ? 'ing...' : 'e'}`
+        : `Creat${isCreating ? 'ing...' : 'e'}`}
     </Button>
   )
 }

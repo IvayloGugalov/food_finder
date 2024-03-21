@@ -49,4 +49,6 @@ export type UpdateSupermarketParams = z.infer<typeof updateSupermarketParams>
 export type SupermarketId = z.infer<typeof supermarketIdSchema>['id']
 
 // this type infers the return from getSupermarkets() - meaning it will include any joins
-export type CompleteSupermarket = Awaited<ReturnType<typeof getSupermarkets>>['supermarkets'][number]
+export type CompleteSupermarket = Awaited<
+  ReturnType<typeof getSupermarkets>
+>['supermarkets'][number]

@@ -1,0 +1,22 @@
+root: true
+extends:
+  - 'next/core-web-vitals'
+  - 'eslint:recommended'
+  - 'plugin:@typescript-eslint/recommended'
+  - 'plugin:unicorn/recommended'
+parser: '@typescript-eslint/parser'
+parserOptions:
+  project: './tsconfig.json'
+plugins:
+  - drizzle
+rules:
+  '@typescript-eslint/consistent-type-imports':
+    - error
+    - disallowTypeAnnotations: false
+      fixStyle: separate-type-imports
+  'drizzle/enforce-delete-with-where': 'error'
+  'drizzle/enforce-update-with-where': 'error'
+  'unicorn/explicit-length-check': 'off'
+  'unicorn/filename-case': 'off'
+  'unicorn/prefer-module': 'off'
+  'unicorn/no-array-reduce': 'off'
