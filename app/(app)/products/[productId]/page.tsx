@@ -8,6 +8,7 @@ import { checkAuth } from '@/lib/auth/utils'
 
 import { BackButton } from '@/components/shared/BackButton'
 import Loading from '@/app/loading'
+import { getProductPriceHistories } from '@/lib/api/productPriceHistory/queries'
 
 export const revalidate = 0
 
@@ -27,6 +28,7 @@ const Product = async ({ id }: { id: string }) => {
   await checkAuth()
 
   const { product } = await getProductById(id)
+  const { productPriceHistory } = await getProductPriceHistories(id)
   const { supermarkets } = await getSupermarkets()
 
   if (!product) notFound()
@@ -34,7 +36,11 @@ const Product = async ({ id }: { id: string }) => {
     <Suspense fallback={<Loading />}>
       <div className='relative'>
         <BackButton currentResource='products' />
-        <OptimisticProduct product={product} supermarkets={supermarkets} />
+        <OptimisticProduct
+          product={product}
+          supermarkets={supermarkets}
+          priceHistory={productPriceHistory}
+        />
       </div>
     </Suspense>
   )

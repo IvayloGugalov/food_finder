@@ -3,7 +3,7 @@ import { varchar, timestamp, real, pgTable, unique } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { products } from './products'
-import { getProductPriceHistories } from '@/lib/api/productPriceHistory/queries'
+import { getAllProductPriceHistories, getProductPriceHistories } from '@/lib/api/productPriceHistory/queries'
 
 import { nanoid, timestamps } from '@/lib/utils'
 
@@ -76,5 +76,5 @@ export type ProductPriceHistoryId = z.infer<typeof productPriceHistoryIdSchema>[
 
 // this type infers the return from getProductPriceHistories() - meaning it will include any joins
 export type CompleteProductPriceHistory = Awaited<
-  ReturnType<typeof getProductPriceHistories>
+  ReturnType<typeof getAllProductPriceHistories | typeof getProductPriceHistories>
 >['productPriceHistory'][number]

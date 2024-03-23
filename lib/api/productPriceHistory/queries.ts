@@ -5,13 +5,23 @@ import {
   productPriceHistoryIdSchema,
   productPriceHistory,
 } from '@/lib/db/schema/productPriceHistory'
-import { products } from '@/lib/db/schema/products'
+import { ProductId, productIdSchema, products } from '@/lib/db/schema/products'
 
-export const getProductPriceHistories = async () => {
+export const getAllProductPriceHistories = async () => {
   const rows = await db
     .select({ productPriceHistory: productPriceHistory, product: products })
     .from(productPriceHistory)
     .leftJoin(products, eq(productPriceHistory.productId, products.id))
+  const p = rows.map((r) => ({ ...r.productPriceHistory, product: r.product }))
+  return { productPriceHistory: p }
+}
+
+export const getProductPriceHistories = async (id: ProductId) => {
+  const { id: productId } = productIdSchema.parse({ id })
+  const rows = await db
+    .select({ productPriceHistory: productPriceHistory, product: products })
+    .from(productPriceHistory)
+    .where(eq(products.id, productId))
   const p = rows.map((r) => ({ ...r.productPriceHistory, product: r.product }))
   return { productPriceHistory: p }
 }

@@ -31,6 +31,21 @@ export const additionalLinks: AdditionalLinks[] = [
         title: 'Generate all',
         icon: Globe,
       },
+      {
+        href: '/shopping-lists',
+        title: 'Shopping lists',
+        icon: Globe,
+      },
+      {
+        href: '/shopping-products',
+        title: 'Shopping products',
+        icon: Globe,
+      },
+      {
+        href: '/product-price-history',
+        title: 'Price history',
+        icon: Globe,
+      },
     ],
   },
 ]

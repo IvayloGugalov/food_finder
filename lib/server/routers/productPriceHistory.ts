@@ -1,6 +1,6 @@
 import {
   getProductPriceHistoryById,
-  getProductPriceHistories,
+  getAllProductPriceHistories,
 } from '@/lib/api/productPriceHistory/queries'
 import { publicProcedure, router } from '@/lib/server/trpc'
 import {
@@ -15,8 +15,8 @@ import {
 } from '@/lib/api/productPriceHistory/mutations'
 
 export const productPriceHistoryRouter = router({
-  getProductPriceHistories: publicProcedure.query(async () => {
-    return getProductPriceHistories()
+  getAllProductPriceHistories: publicProcedure.query(async () => {
+    return getAllProductPriceHistories()
   }),
   getProductPriceHistoryById: publicProcedure
     .input(productPriceHistoryIdSchema)
