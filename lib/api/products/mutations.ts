@@ -22,6 +22,18 @@ export const createProduct = async (product: NewProductParams) => {
   }
 }
 
+export const createProducts = async (pproducts: NewProductParams[]) => {
+  const newProducts = pproducts.map(product => insertProductSchema.parse(product))
+  try {
+    await db.insert(products).values(newProducts)
+      .onConflictDoNothing().catch((x) => console.error(JSON.stringify(x)))
+  } catch (err) {
+    const message = (err as Error).message ?? 'Error, please try again'
+    console.error(message)
+    throw { error: message }
+  }
+}
+
 export const updateProduct = async (id: ProductId, product: UpdateProductParams) => {
   const { id: productId } = productIdSchema.parse({ id })
   const newProduct = updateProductSchema.parse(product)

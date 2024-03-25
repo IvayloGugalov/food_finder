@@ -2,6 +2,7 @@
 // import { Button } from '@/components/ui/button'
 
 import data from '1st.json'
+import newerdata from '2nd.json'
 
 import {
   SupermarketId,
@@ -21,7 +22,7 @@ import {
 } from '@/lib/db/schema/products'
 import { createSupermarket } from '@/lib/api/supermarkets/mutations'
 import { useTransition } from 'react'
-import { createProduct } from '@/lib/api/products/mutations'
+import { createProduct, createProducts } from '@/lib/api/products/mutations'
 
 // const fetchUrl = 'https://sofia-supermarkets-api-proxy.stefan-bratanov.workers.dev/products'
 
@@ -51,12 +52,14 @@ export default async function GenerateAllPage() {
     //   products: NewProductParams[]
     // }[]
 
-    const superMarkets = data.map((x) => x.supermarket)
-    const products = data
+    const superMarkets = newerdata.map((x) => x.supermarket)
+    const products = newerdata
       .map((x) =>
         x.products.map((p) => ({
           ...p,
-          supermarketId: mapIdByName(x.supermarket, ddd),
+          price: p.price ? parseFloat(`${p.price}`.replace(/,/, '.')) : 0,
+          oldPrice: p.oldPrice ? parseFloat(`${p.oldPrice}`.replace(/,/, '.')) : p.oldPrice,
+          supermarketId: mapIdByName(x.supermarket, ddd) ?? 'ivoG',
         }))
       )
       .flat()
@@ -66,13 +69,20 @@ export default async function GenerateAllPage() {
     // })
     // await Promise.all(creatingsuperMarkets)
 
-    const creatingProducts = products.map((product) => {
-      // console.log(product.name)
-      try {
-        createProduct(product as unknown as NewProductParams)
-      } catch (e) {}
-    })
-    await Promise.all(creatingProducts)
+
+    console.log(products.length)
+    try {
+      await createProducts(products)
+    } catch(e) {
+      console.error(JSON.stringify(e))
+    }
+    // const creatingProducts = products.map((product) => {
+    //   // console.log(product.name)
+    //   try {
+    //     createProduct(product as unknown as NewProductParams)
+    //   } catch (e) {}
+    // })
+    // await Promise.all(creatingProducts)
   }
 
   // await fetchData()
