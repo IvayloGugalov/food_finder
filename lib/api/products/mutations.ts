@@ -27,6 +27,8 @@ type NewProductType = {
   validUntil?: string | null | undefined
 }
 
+const DUPLICATE_UNIQUE_CONSTRAIN_ERROR_CODE = '23505'
+
 export const createProduct = async (product: NewProductParams) => {
   const newProduct = insertProductSchema.parse(product)
   try {
@@ -36,7 +38,7 @@ export const createProduct = async (product: NewProductParams) => {
     const error = err as NeonDbError
     const errorCode = error.code
     // duplicate key value violates unique constraint
-    if (errorCode === '23505') {
+    if (errorCode === DUPLICATE_UNIQUE_CONSTRAIN_ERROR_CODE) {
       return await createProductAndPriceHistory(newProduct)
     }
     const errorMessage = error.message ?? 'Error, please try again'
