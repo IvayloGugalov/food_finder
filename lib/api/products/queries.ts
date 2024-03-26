@@ -1,6 +1,12 @@
 import { db } from '@/lib/db/index'
 import { eq, and } from 'drizzle-orm'
-import { type ProductId, productIdSchema, products } from '@/lib/db/schema/products'
+import {
+  type ProductId,
+  productIdSchema,
+  products,
+  ProductName,
+  productNameSchema,
+} from '@/lib/db/schema/products'
 import { supermarkets } from '@/lib/db/schema/supermarkets'
 
 export const getProducts = async () => {
@@ -18,6 +24,18 @@ export const getProductById = async (id: ProductId) => {
     .select({ product: products, supermarket: supermarkets })
     .from(products)
     .where(and(eq(products.id, productId)))
+    .leftJoin(supermarkets, eq(products.supermarketId, supermarkets.id))
+  if (row === undefined) return {}
+  const p = { ...row.product, supermarket: row.supermarket }
+  return { product: p }
+}
+
+export const getProductByName = async (name: ProductName) => {
+  const { name: productName } = productNameSchema.parse({ name: name })
+  const [row] = await db
+    .select({ product: products, supermarket: supermarkets })
+    .from(products)
+    .where(and(eq(products.name, productName)))
     .leftJoin(supermarkets, eq(products.supermarketId, supermarkets.id))
   if (row === undefined) return {}
   const p = { ...row.product, supermarket: row.supermarket }

@@ -11,10 +11,10 @@ import {
 } from '@/lib/db/schema/productPriceHistory'
 
 export const createProductPriceHistory = async (
-  productPriceHistory: NewProductPriceHistoryParams
+  productPrice: NewProductPriceHistoryParams
 ) => {
   const newProductPriceHistory =
-    insertProductPriceHistorySchema.parse(productPriceHistory)
+    insertProductPriceHistorySchema.parse(productPrice)
   try {
     const [p] = await db
       .insert(productPriceHistory)
@@ -30,11 +30,11 @@ export const createProductPriceHistory = async (
 
 export const updateProductPriceHistory = async (
   id: ProductPriceHistoryId,
-  productPriceHistory: UpdateProductPriceHistoryParams
+  productPrice: UpdateProductPriceHistoryParams
 ) => {
   const { id: productPriceHistoryId } = productPriceHistoryIdSchema.parse({ id })
   const newProductPriceHistory =
-    updateProductPriceHistorySchema.parse(productPriceHistory)
+    updateProductPriceHistorySchema.parse(productPrice)
   try {
     const [p] = await db
       .update(productPriceHistory)

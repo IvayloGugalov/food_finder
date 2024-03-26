@@ -2,6 +2,7 @@
 // import { Button } from '@/components/ui/button'
 
 import data from '1st.json'
+import newerdata from '2nd.json'
 
 import {
   SupermarketId,
@@ -21,7 +22,7 @@ import {
 } from '@/lib/db/schema/products'
 import { createSupermarket } from '@/lib/api/supermarkets/mutations'
 import { useTransition } from 'react'
-import { createProduct } from '@/lib/api/products/mutations'
+import { createProduct, createProducts } from '@/lib/api/products/mutations'
 
 // const fetchUrl = 'https://sofia-supermarkets-api-proxy.stefan-bratanov.workers.dev/products'
 
@@ -51,28 +52,46 @@ export default async function GenerateAllPage() {
     //   products: NewProductParams[]
     // }[]
 
-    const superMarkets = data.map((x) => x.supermarket)
-    const products = data
-      .map((x) =>
-        x.products.map((p) => ({
-          ...p,
-          supermarketId: mapIdByName(x.supermarket, ddd),
-        }))
-      )
-      .flat()
+    // const superMarkets = newerdata.map((x) => x.supermarket)
+    // const products = newerdata
+    //   .map((x) =>
+    //     x.products.map((p) => ({
+    //       ...p,
+    //       price: p.price ? parseFloat(`${p.price}`.replace(/,/, '.')) : 0,
+    //       oldPrice: p.oldPrice ? parseFloat(`${p.oldPrice}`.replace(/,/, '.')) : p.oldPrice,
+    //       supermarketId: mapIdByName(x.supermarket, ddd) ?? 'ivoG',
+    //     }))
+    //   )
+    //   .flat()
 
     // const creatingsuperMarkets = superMarkets.map((spmr) => {
     //   createSupermarket({name: spmr })
     // })
     // await Promise.all(creatingsuperMarkets)
-
-    const creatingProducts = products.map((product) => {
-      // console.log(product.name)
-      try {
-        createProduct(product as unknown as NewProductParams)
-      } catch (e) {}
+    await createProduct({
+      category: 'НИСКА цена, ВИСОКО качество',
+      name: 'АМЕТА Прясно цяло пиле',
+      oldPrice: 5,
+      picUrl: null,
+      price: 9.99,
+      quantity: 'за kg',
+      supermarketId: 'ouh11dqxk9xjmrhzn8v4s',
+      validFrom: '2024-03-11',
+      validUntil: '2024-03-11',
     })
-    await Promise.all(creatingProducts)
+    // console.log(products.length)
+    try {
+      // await createProducts(products)
+    } catch (e) {
+      console.error(JSON.stringify(e))
+    }
+    // const creatingProducts = products.map((product) => {
+    //   // console.log(product.name)
+    //   try {
+    //     createProduct(product as unknown as NewProductParams)
+    //   } catch (e) {}
+    // })
+    // await Promise.all(creatingProducts)
   }
 
   // await fetchData()
