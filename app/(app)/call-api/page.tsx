@@ -52,28 +52,37 @@ export default async function GenerateAllPage() {
     //   products: NewProductParams[]
     // }[]
 
-    const superMarkets = newerdata.map((x) => x.supermarket)
-    const products = newerdata
-      .map((x) =>
-        x.products.map((p) => ({
-          ...p,
-          price: p.price ? parseFloat(`${p.price}`.replace(/,/, '.')) : 0,
-          oldPrice: p.oldPrice ? parseFloat(`${p.oldPrice}`.replace(/,/, '.')) : p.oldPrice,
-          supermarketId: mapIdByName(x.supermarket, ddd) ?? 'ivoG',
-        }))
-      )
-      .flat()
+    // const superMarkets = newerdata.map((x) => x.supermarket)
+    // const products = newerdata
+    //   .map((x) =>
+    //     x.products.map((p) => ({
+    //       ...p,
+    //       price: p.price ? parseFloat(`${p.price}`.replace(/,/, '.')) : 0,
+    //       oldPrice: p.oldPrice ? parseFloat(`${p.oldPrice}`.replace(/,/, '.')) : p.oldPrice,
+    //       supermarketId: mapIdByName(x.supermarket, ddd) ?? 'ivoG',
+    //     }))
+    //   )
+    //   .flat()
 
     // const creatingsuperMarkets = superMarkets.map((spmr) => {
     //   createSupermarket({name: spmr })
     // })
     // await Promise.all(creatingsuperMarkets)
-
-
-    console.log(products.length)
+    await createProduct({
+      category: 'НИСКА цена, ВИСОКО качество',
+      name: 'АМЕТА Прясно цяло пиле',
+      oldPrice: 5,
+      picUrl: null,
+      price: 9.99,
+      quantity: 'за kg',
+      supermarketId: 'ouh11dqxk9xjmrhzn8v4s',
+      validFrom: '2024-03-11',
+      validUntil: '2024-03-11',
+    })
+    // console.log(products.length)
     try {
-      await createProducts(products)
-    } catch(e) {
+      // await createProducts(products)
+    } catch (e) {
       console.error(JSON.stringify(e))
     }
     // const creatingProducts = products.map((product) => {
