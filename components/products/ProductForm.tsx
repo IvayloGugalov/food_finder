@@ -370,8 +370,7 @@ const ProductForm = ({
             <SelectContent>
               {supermarkets?.map((supermarket) => (
                 <SelectItem key={supermarket.id} value={supermarket.id.toString()}>
-                  {supermarket.id}
-                  {/* TODO: Replace with a field from the supermarket model */}
+                  {supermarket.name}
                 </SelectItem>
               ))}
             </SelectContent>

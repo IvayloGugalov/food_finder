@@ -14,13 +14,6 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { useBackPath } from '@/components/shared/BackButton'
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { CalendarIcon } from 'lucide-react'
 import { Calendar } from '@/components/ui/calendar'
@@ -35,10 +28,9 @@ import {
   deleteProductPriceHistoryAction,
   updateProductPriceHistoryAction,
 } from '@/lib/actions/productPriceHistory'
-import { type Product, type ProductId } from '@/lib/db/schema/products'
+import { type ProductId } from '@/lib/db/schema/products'
 
 const ProductPriceHistoryForm = ({
-  products,
   productId,
   productPriceHistory,
   openModal,
@@ -47,7 +39,6 @@ const ProductPriceHistoryForm = ({
   postSuccess,
 }: {
   productPriceHistory?: ProductPriceHistory | null
-  products: Product[]
   productId?: ProductId
   openModal?: (productPriceHistory?: ProductPriceHistory) => void
   closeModal?: () => void
@@ -139,38 +130,6 @@ const ProductPriceHistoryForm = ({
     <form action={handleSubmit} onChange={handleChange} className={'space-y-8'}>
       {/* Schema fields start */}
 
-      {productId ? null : (
-        <div>
-          <Label
-            className={cn(
-              'mb-2 inline-block',
-              errors?.productId ? 'text-destructive' : ''
-            )}
-          >
-            Product
-          </Label>
-          <Select defaultValue={productPriceHistory?.productId} name='productId'>
-            <SelectTrigger
-              className={cn(errors?.productId ? 'ring ring-destructive' : '')}
-            >
-              <SelectValue placeholder='Select a product' />
-            </SelectTrigger>
-            <SelectContent>
-              {products?.map((product) => (
-                <SelectItem key={product.id} value={product.id.toString()}>
-                  {product.id}
-                  {/* TODO: Replace with a field from the product model */}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors?.productId ? (
-            <p className='text-xs text-destructive mt-2'>{errors.productId[0]}</p>
-          ) : (
-            <div className='h-6' />
-          )}
-        </div>
-      )}
       <div>
         <Label
           className={cn(

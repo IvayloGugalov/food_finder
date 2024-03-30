@@ -3,7 +3,7 @@
 import { MouseEventHandler } from 'react'
 import { Button } from '../ui/button'
 
-export const SaveButton = ({
+export const AddToShoppingListButton = ({
   disabled,
   onClick,
 }: {

@@ -2,7 +2,6 @@ import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 
 import { getProductPriceHistoryById } from '@/lib/api/productPriceHistory/queries'
-import { getProducts } from '@/lib/api/products/queries'
 import OptimisticProductPriceHistory from './OptimisticProductPriceHistory'
 
 import { BackButton } from '@/components/shared/BackButton'
@@ -24,7 +23,6 @@ export default async function ProductPriceHistoryPage({
 
 const ProductPriceHistory = async ({ id }: { id: string }) => {
   const { productPriceHistory } = await getProductPriceHistoryById(id)
-  const { products } = await getProducts()
 
   if (!productPriceHistory) notFound()
   return (
@@ -33,7 +31,7 @@ const ProductPriceHistory = async ({ id }: { id: string }) => {
         <BackButton currentResource='product-price-history' />
         <OptimisticProductPriceHistory
           productPriceHistory={productPriceHistory}
-          products={products}
+          productId={productPriceHistory.productId}
         />
       </div>
     </Suspense>

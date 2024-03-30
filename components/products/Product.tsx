@@ -10,7 +10,7 @@ import {
   CardContent,
   CardFooter,
 } from '../ui/card'
-import { SaveButton } from './SaveButton'
+import { AddToShoppingListButton } from './AddToShoppingListButton'
 
 export const Product = ({
   product,
@@ -51,7 +51,9 @@ export const Product = ({
           <p className='text-sm font-light text-slate-400'>{product.oldPrice} лв.</p>
         )}
       </div>
-      {handleSubmit && <SaveButton onClick={() => handleSubmit(product)} disabled={disabled} />}
+      {handleSubmit && (
+        <AddToShoppingListButton onClick={() => handleSubmit(product)} disabled={disabled} />
+      )}
     </CardFooter>
   </Card>
 )

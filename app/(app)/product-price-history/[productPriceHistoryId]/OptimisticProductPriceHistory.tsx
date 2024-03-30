@@ -8,16 +8,13 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import Modal from '@/components/shared/Modal'
 import ProductPriceHistoryForm from '@/components/productPriceHistory/ProductPriceHistoryForm'
-import { type Product, type ProductId } from '@/lib/db/schema/products'
+import { type ProductId } from '@/lib/db/schema/products'
 
 export default function OptimisticProductPriceHistory({
   productPriceHistory,
-  products,
   productId,
 }: {
   productPriceHistory: ProductPriceHistory
-
-  products: Product[]
   productId?: ProductId
 }) {
   const [open, setOpen] = useState(false)
@@ -35,7 +32,6 @@ export default function OptimisticProductPriceHistory({
       <Modal open={open} setOpen={setOpen}>
         <ProductPriceHistoryForm
           productPriceHistory={optimisticProductPriceHistory}
-          products={products}
           productId={productId}
           closeModal={closeModal}
           openModal={openModal}

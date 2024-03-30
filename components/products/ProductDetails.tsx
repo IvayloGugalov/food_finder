@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 import { Product } from '@/lib/db/schema/products'
 import { Supermarket } from '@/lib/db/schema/supermarkets'
-import { SaveButton } from './SaveButton'
+import { AddToShoppingListButton } from './AddToShoppingListButton'
 import { useAddShoppingProduct } from '@/lib/hooks/useAddShoppingProduct'
 import { CompleteProductPriceHistory } from '@/lib/db/schema/productPriceHistory'
 import {
@@ -68,7 +68,7 @@ const ProductDetails = ({
 
           <div className='py-10 flex justify-between'>
             <h1 className='text-4xl'>{product.price} лв.</h1>
-            <SaveButton
+            <AddToShoppingListButton
               disabled={pending || hasErrors}
               onClick={() =>
                 handleSubmitProductToShoppingList({
@@ -95,7 +95,7 @@ const ProductDetails = ({
                   </TableHeader>
                   <TableBody>
                     {priceHistory.map((p) => (
-                      <TableRow>
+                      <TableRow key={p.id}>
                         <TableCell className='font-medium w-[350px] '>
                           {p.weekDayStart.toDateString()} -&nbsp;
                           {p.weekDayEnd.toDateString()}

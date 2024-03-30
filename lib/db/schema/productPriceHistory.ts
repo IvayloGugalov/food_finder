@@ -16,10 +16,10 @@ export const productPriceHistory = pgTable(
     productId: varchar('product_id', { length: 256 })
       .references(() => products.id, { onDelete: 'cascade' })
       .notNull(),
-    weekDayStart: timestamp('week_day_start')
+    weekDayStart: timestamp('week_day_start', { mode: 'date' })
       .notNull()
       .default(sql`now()`),
-    weekDayEnd: timestamp('week_day_end')
+    weekDayEnd: timestamp('week_day_end', { mode: 'date' })
       .notNull()
       .default(sql`now()`),
     price: real('price').notNull(),
@@ -50,6 +50,8 @@ export const insertProductPriceHistoryParams = baseSchema
     productId: z.coerce.string().min(1),
     price: z.coerce.number(),
     oldPrice: z.coerce.number(),
+    weekDayStart: z.coerce.date(),
+    weekDayEnd: z.coerce.date(),
   })
   .omit({
     id: true,
@@ -60,6 +62,8 @@ export const updateProductPriceHistoryParams = baseSchema.extend({
   productId: z.coerce.string().min(1),
   price: z.coerce.number(),
   oldPrice: z.coerce.number(),
+  weekDayStart: z.coerce.date(),
+  weekDayEnd: z.coerce.date(),
 })
 export const productPriceHistoryIdSchema = baseSchema.pick({ id: true })
 

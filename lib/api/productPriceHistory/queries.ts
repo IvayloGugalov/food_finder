@@ -21,7 +21,7 @@ export const getProductPriceHistories = async (id: ProductId) => {
   const rows = await db
     .select({ productPriceHistory: productPriceHistory, product: products })
     .from(productPriceHistory)
-    .where(eq(products.id, productId))
+    .leftJoin(products, eq(products.id, productId))
   const p = rows.map((r) => ({ ...r.productPriceHistory, product: r.product }))
   return { productPriceHistory: p }
 }

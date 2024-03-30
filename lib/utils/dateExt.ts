@@ -1,4 +1,6 @@
-import moment from 'moment'
+import moment from 'moment-timezone'
+
+moment.tz.setDefault('UTC');
 
 export function getStartAndEndDateOfCurrentWeek() {
   const today = getUtcNow()
@@ -16,6 +18,6 @@ export function getStartAndEndDateOfCurrentWeek() {
   return { startDate, endDate }
 }
 
-export const getUtcNow = () => new Date(moment.utc().startOf('day').format())
-export const getUtcFromDate = (date: Date) => new Date(moment.utc(date).format())
-export const getUtcFromString = (date: string) => new Date(moment.utc(date).format())
+export const getUtcNow = () => moment.utc().startOf('day').toDate()
+export const getUtcFromDate = (date: Date) => moment.utc(date).toDate()
+export const getUtcFromString = (date: string) => moment.utc(date).toDate()
