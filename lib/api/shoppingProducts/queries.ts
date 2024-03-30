@@ -7,7 +7,11 @@ import {
   shoppingProductProductAndShoppingListIdSchema,
 } from '@/lib/db/schema/shoppingProducts'
 import { ProductId, products } from '@/lib/db/schema/products'
-import { ShoppingListId, shoppingLists } from '@/lib/db/schema/shoppingLists'
+import {
+  ShoppingListId,
+  shoppingListIdSchema,
+  shoppingLists,
+} from '@/lib/db/schema/shoppingLists'
 
 export const getShoppingProducts = async () => {
   const rows = await db
@@ -46,6 +50,28 @@ export const getShoppingProductById = async (id: ShoppingProductId) => {
     shoppingList: row.shoppingList,
   }
   return { shoppingProduct: s }
+}
+
+export const getShoppingProductsForShoppingListId = async (id: ShoppingListId) => {
+  const { id: shoppingListId } = shoppingListIdSchema.parse({ id })
+
+  const rows = await db
+    .select({
+      shoppingProduct: shoppingProducts,
+      product: products,
+      shoppingList: shoppingLists,
+    })
+    .from(shoppingProducts)
+    .where(eq(shoppingProducts.shoppingListId, shoppingListId))
+    .leftJoin(products, eq(shoppingProducts.productId, products.id))
+    .leftJoin(shoppingLists, eq(shoppingProducts.shoppingListId, shoppingLists.id))
+
+  const s = rows.map((r) => ({
+    ...r.shoppingProduct,
+    product: r.product,
+    shoppingList: r.shoppingList,
+  }))
+  return { shoppingProducts: s }
 }
 
 export const getShoppingProductByProductAndShoppingListId = async (
