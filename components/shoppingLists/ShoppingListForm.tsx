@@ -111,7 +111,7 @@ const ShoppingListForm = ({
           : await createShoppingListAction(values)
 
         const errorFormatted = {
-          error: error ?? 'Error',
+          error: error as string ?? 'Error',
           values: pendingShoppingList,
         }
         onSuccess(editing ? 'update' : 'create', error ? errorFormatted : undefined)

@@ -107,10 +107,7 @@ const ProductPriceHistoryForm = ({
           })
 
         const error = editing
-          ? await updateProductPriceHistoryAction({
-              ...values,
-              id: productPriceHistory.id,
-            })
+          ? await updateProductPriceHistoryAction({ ...values, id: productPriceHistory.id })
           : await createProductPriceHistoryAction(values)
 
         const errorFormatted = {

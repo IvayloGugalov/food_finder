@@ -34,11 +34,13 @@ const Product = async ({ id }: { id: string }) => {
     <Suspense fallback={<Loading />}>
       <div className='relative'>
         <BackButton currentResource='products' />
-        <OptimisticProduct
+        Render product here?
+        {/* <OptimisticProduct
           product={product}
           supermarkets={supermarkets}
           supermarketId={product.supermarketId}
-        />
+          priceHistory={null}
+        /> */}
       </div>
     </Suspense>
   )

@@ -24,8 +24,6 @@ import { createSupermarket } from '@/lib/api/supermarkets/mutations'
 import { useTransition } from 'react'
 import { createProduct, createProducts } from '@/lib/api/products/mutations'
 
-// const fetchUrl = 'https://sofia-supermarkets-api-proxy.stefan-bratanov.workers.dev/products'
-
 const ddd = [
   { id: 'ouh11dqxk9xjmrhzn8v4s', name: 'Lidl' },
   { id: '5rvif4y3b4u3by78b1837', name: 'Billa' },

@@ -7,6 +7,7 @@ type Props = {
   color?: string
   gradient?: boolean
   size?: string
+  [key: string]: any
 }
 
 const Icon = ({ id, icon, color, gradient, size, ...props }: Props) => {

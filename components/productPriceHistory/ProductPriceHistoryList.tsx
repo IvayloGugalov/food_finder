@@ -56,7 +56,6 @@ export default function ProductPriceHistoryList({
           addOptimistic={addOptimisticProductPriceHistory}
           openModal={openModal}
           closeModal={closeModal}
-          products={products}
           productId={productId}
         />
       </Modal>
