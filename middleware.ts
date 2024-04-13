@@ -14,10 +14,10 @@ export async function middleware(req: NextRequest) {
   try {
     // Check whether the maintenance page should be shown
     const isInMaintenanceMode = await get<boolean>('isInMaintenanceMode')
-    console.log(isInMaintenanceMode, process.env.EDGE_CONFIG)
 
     // If is in maintenance mode, point the url pathname to the maintenance page
     if (isInMaintenanceMode) {
+      console.log('going to /maintenance')
       req.nextUrl.pathname = `/maintenance`
 
       // Rewrite to the url

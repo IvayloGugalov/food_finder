@@ -80,7 +80,6 @@ export const createProducts = async (productsToInsert: NewProductParams[]) => {
       .insert(products)
       .values(newProducts)
       .onConflictDoNothing()
-      .catch((error) => console.error(JSON.stringify(error)))
   } catch (error) {
     const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
