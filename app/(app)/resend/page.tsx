@@ -45,13 +45,13 @@ export default function Home() {
         <div>
           <ol className='list-decimal list-inside space-y-1'>
             <li>
-              <Link
+              {/* <Link
                 className='text-primary hover:text-muted-foreground underline'
                 href='https://resend.com/signup'
               >
                 Sign up
               </Link>{' '}
-              or{' '}
+              or{' '} */}
               <Link
                 className='text-primary hover:text-muted-foreground underline'
                 href='https://resend.com/login'
