@@ -159,10 +159,10 @@ export default function LandingPage() {
   )
 }
 
-function MountainIcon(props: any) {
+function MountainIcon(properties: any) {
   return (
     <svg
-      {...props}
+      {...properties}
       xmlns='http://www.w3.org/2000/svg'
       width='24'
       height='24'

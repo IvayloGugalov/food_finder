@@ -116,9 +116,9 @@ const ProductPriceHistoryForm = ({
         }
         onSuccess(editing ? 'update' : 'create', error ? errorFormatted : undefined)
       })
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        setErrors(e.flatten().fieldErrors)
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setErrors(error.flatten().fieldErrors)
       }
     }
   }
@@ -307,7 +307,7 @@ const ProductPriceHistoryForm = ({
 
 export default ProductPriceHistoryForm
 
-const SaveButton = ({ editing, errors }: { editing: Boolean; errors: boolean }) => {
+const SaveButton = ({ editing, errors }: { editing: boolean; errors: boolean }) => {
   const { pending } = useFormStatus()
   const isCreating = pending && editing === false
   const isUpdating = pending && editing === true

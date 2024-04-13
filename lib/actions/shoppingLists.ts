@@ -6,23 +6,24 @@ import {
   deleteShoppingList,
   updateShoppingList,
 } from '@/lib/api/shoppingLists/mutations'
-import {
+import type {
   ShoppingListId,
   NewShoppingListParams,
-  UpdateShoppingListParams,
+  UpdateShoppingListParams} from '@/lib/db/schema/shoppingLists';
+import {
   shoppingListIdSchema,
   insertShoppingListParams,
   updateShoppingListParams,
 } from '@/lib/db/schema/shoppingLists'
 
 const handleErrors = (e: unknown) => {
-  const errMsg = 'Error, please try again.'
-  if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg
+  const errorMessage = 'Error, please try again.'
+  if (e instanceof Error) return e.message.length > 0 ? e.message : errorMessage
   if (e && typeof e === 'object' && 'error' in e) {
-    const errAsStr = e.error as string
-    return errAsStr.length > 0 ? errAsStr : errMsg
+    const errorAsString = e.error as string
+    return errorAsString.length > 0 ? errorAsString : errorMessage
   }
-  return errMsg
+  return errorMessage
 }
 
 const revalidateShoppingLists = () => revalidatePath('/shopping-lists')
@@ -32,8 +33,8 @@ export const createShoppingListAction = async (input: NewShoppingListParams) => 
     const payload = insertShoppingListParams.parse(input)
     revalidateShoppingLists()
     return await createShoppingList(payload)
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }
 
@@ -42,8 +43,8 @@ export const updateShoppingListAction = async (input: UpdateShoppingListParams) 
     const payload = updateShoppingListParams.parse(input)
     await updateShoppingList(payload.id, payload)
     revalidateShoppingLists()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }
 
@@ -52,7 +53,7 @@ export const deleteShoppingListAction = async (input: ShoppingListId) => {
     const payload = shoppingListIdSchema.parse({ id: input })
     await deleteShoppingList(payload.id)
     revalidateShoppingLists()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }

@@ -35,7 +35,7 @@ const ddd = [
 const mapIdByName = (name: string, supermarkets: typeof ddd) => {
   const lowerCaseName = name.toLowerCase()
   const matchedObject = supermarkets.find(
-    (obj) => obj.name.toLowerCase() === lowerCaseName
+    (object) => object.name.toLowerCase() === lowerCaseName
   )
   return matchedObject ? matchedObject.id : null
 }
@@ -80,8 +80,8 @@ export default async function GenerateAllPage() {
     // console.log(products.length)
     try {
       // await createProducts(products)
-    } catch (e) {
-      console.error(JSON.stringify(e))
+    } catch (error) {
+      console.error(JSON.stringify(error))
     }
     // const creatingProducts = products.map((product) => {
     //   // console.log(product.name)

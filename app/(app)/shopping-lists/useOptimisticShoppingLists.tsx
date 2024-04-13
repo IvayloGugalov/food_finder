@@ -2,7 +2,7 @@ import {
   type ShoppingList,
   type CompleteShoppingList,
 } from '@/lib/db/schema/shoppingLists'
-import { OptimisticAction } from '@/lib/utils'
+import type { OptimisticAction } from '@/lib/utils'
 import { useOptimistic } from 'react'
 
 export type TAddOptimistic = (action: OptimisticAction<ShoppingList>) => void
@@ -23,20 +23,24 @@ export const useOptimisticShoppingLists = (shoppingLists: CompleteShoppingList[]
       }
 
       switch (action.action) {
-        case 'create':
+        case 'create': {
           return currentState.length === 0
             ? [optimisticShoppingList]
             : [...currentState, optimisticShoppingList]
-        case 'update':
+        }
+        case 'update': {
           return currentState.map((item) =>
             item.id === data.id ? { ...item, ...optimisticShoppingList } : item
           )
-        case 'delete':
+        }
+        case 'delete': {
           return currentState.map((item) =>
             item.id === data.id ? { ...item, id: 'delete' } : item
           )
-        default:
+        }
+        default: {
           return currentState
+        }
       }
     }
   )

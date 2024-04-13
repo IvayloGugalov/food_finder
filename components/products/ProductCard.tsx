@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { CompleteProduct } from '@/lib/db/schema/products'
+import type { CompleteProduct } from '@/lib/db/schema/products'
 import {
   Card,
   CardHeader,

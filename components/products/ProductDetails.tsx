@@ -1,10 +1,10 @@
 import Image from 'next/image'
 
-import { Product } from '@/lib/db/schema/products'
-import { Supermarket } from '@/lib/db/schema/supermarkets'
+import type { Product } from '@/lib/db/schema/products'
+import type { Supermarket } from '@/lib/db/schema/supermarkets'
 import { AddToShoppingListButton } from './AddToShoppingListButton'
 import { useAddShoppingProduct } from '@/lib/hooks/useAddShoppingProduct'
-import { CompleteProductPriceHistory } from '@/lib/db/schema/productPriceHistory'
+import type { CompleteProductPriceHistory } from '@/lib/db/schema/productPriceHistory'
 import {
   Table,
   TableBody,

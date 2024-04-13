@@ -1,9 +1,10 @@
 import { db } from '@/lib/db/index'
 import { eq } from 'drizzle-orm'
-import {
+import type {
   ProductPriceHistoryId,
   NewProductPriceHistoryParams,
-  UpdateProductPriceHistoryParams,
+  UpdateProductPriceHistoryParams} from '@/lib/db/schema/productPriceHistory';
+import {
   updateProductPriceHistorySchema,
   insertProductPriceHistorySchema,
   productPriceHistory,
@@ -21,8 +22,8 @@ export const createProductPriceHistory = async (
       .values(newProductPriceHistory)
       .returning()
     return { productPriceHistory: p }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }
@@ -42,8 +43,8 @@ export const updateProductPriceHistory = async (
       .where(eq(productPriceHistory.id, productPriceHistoryId!))
       .returning()
     return { productPriceHistory: p }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }
@@ -57,8 +58,8 @@ export const deleteProductPriceHistory = async (id: ProductPriceHistoryId) => {
       .where(eq(productPriceHistory.id, productPriceHistoryId!))
       .returning()
     return { productPriceHistory: p }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }

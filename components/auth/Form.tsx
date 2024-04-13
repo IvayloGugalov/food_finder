@@ -58,15 +58,18 @@ export default AuthForm
 const SubmitButton = ({ action, loading }: { action: Action; loading: boolean }) => {
   let buttonSuffix = ''
   switch (action) {
-    case '/api/sign-in':
+    case '/api/sign-in': {
       buttonSuffix = 'in'
       break
-    case '/api/sign-out':
+    }
+    case '/api/sign-out': {
       buttonSuffix = 'out'
       break
-    case '/api/sign-up':
+    }
+    case '/api/sign-up': {
       buttonSuffix = 'up'
       break
+    }
   }
   return (
     <Button

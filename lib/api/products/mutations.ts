@@ -1,10 +1,11 @@
 import { db } from '@/lib/db/index'
 import { and, eq } from 'drizzle-orm'
-import { NeonDbError } from '@neondatabase/serverless'
-import {
+import type { NeonDbError } from '@neondatabase/serverless'
+import type {
   ProductId,
   NewProductParams,
-  UpdateProductParams,
+  UpdateProductParams} from '@/lib/db/schema/products';
+import {
   updateProductSchema,
   insertProductSchema,
   products,
@@ -34,8 +35,8 @@ export const createProduct = async (product: NewProductParams) => {
   try {
     const [p] = await db.insert(products).values(newProduct).returning()
     return { product: p }
-  } catch (err) {
-    const error = err as NeonDbError
+  } catch (error_) {
+    const error = error_ as NeonDbError
     const errorCode = error.code
     // duplicate key value violates unique constraint
     if (errorCode === DUPLICATE_UNIQUE_CONSTRAIN_ERROR_CODE) {
@@ -79,9 +80,9 @@ export const createProducts = async (productsToInsert: NewProductParams[]) => {
       .insert(products)
       .values(newProducts)
       .onConflictDoNothing()
-      .catch((x) => console.error(JSON.stringify(x)))
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+      .catch((error) => console.error(JSON.stringify(error)))
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }
@@ -97,8 +98,8 @@ export const updateProduct = async (id: ProductId, product: UpdateProductParams)
       .where(and(eq(products.id, productId!)))
       .returning()
     return { product: p }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }
@@ -112,8 +113,8 @@ export const deleteProduct = async (id: ProductId) => {
       .where(and(eq(products.id, productId!)))
       .returning()
     return { product: p }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }

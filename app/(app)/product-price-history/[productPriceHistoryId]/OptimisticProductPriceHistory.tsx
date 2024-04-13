@@ -1,7 +1,7 @@
 'use client'
 
 import { useOptimistic, useState } from 'react'
-import { TAddOptimistic } from '@/app/(app)/product-price-history/useOptimisticProductPriceHistory'
+import type { TAddOptimistic } from '@/app/(app)/product-price-history/useOptimisticProductPriceHistory'
 import { type ProductPriceHistory } from '@/lib/db/schema/productPriceHistory'
 import { cn } from '@/lib/utils'
 

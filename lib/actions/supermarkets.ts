@@ -6,23 +6,24 @@ import {
   deleteSupermarket,
   updateSupermarket,
 } from '@/lib/api/supermarkets/mutations'
-import {
+import type {
   SupermarketId,
   NewSupermarketParams,
-  UpdateSupermarketParams,
+  UpdateSupermarketParams} from '@/lib/db/schema/supermarkets';
+import {
   supermarketIdSchema,
   insertSupermarketParams,
   updateSupermarketParams,
 } from '@/lib/db/schema/supermarkets'
 
 const handleErrors = (e: unknown) => {
-  const errMsg = 'Error, please try again.'
-  if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg
+  const errorMessage = 'Error, please try again.'
+  if (e instanceof Error) return e.message.length > 0 ? e.message : errorMessage
   if (e && typeof e === 'object' && 'error' in e) {
-    const errAsStr = e.error as string
-    return errAsStr.length > 0 ? errAsStr : errMsg
+    const errorAsString = e.error as string
+    return errorAsString.length > 0 ? errorAsString : errorMessage
   }
-  return errMsg
+  return errorMessage
 }
 
 const revalidateSupermarkets = () => revalidatePath('/supermarkets')
@@ -32,8 +33,8 @@ export const createSupermarketAction = async (input: NewSupermarketParams) => {
     const payload = insertSupermarketParams.parse(input)
     await createSupermarket(payload)
     revalidateSupermarkets()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }
 
@@ -42,8 +43,8 @@ export const updateSupermarketAction = async (input: UpdateSupermarketParams) =>
     const payload = updateSupermarketParams.parse(input)
     await updateSupermarket(payload.id, payload)
     revalidateSupermarkets()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }
 
@@ -52,7 +53,7 @@ export const deleteSupermarketAction = async (input: SupermarketId) => {
     const payload = supermarketIdSchema.parse({ id: input })
     await deleteSupermarket(payload.id)
     revalidateSupermarkets()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }

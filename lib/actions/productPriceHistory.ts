@@ -6,23 +6,24 @@ import {
   deleteProductPriceHistory,
   updateProductPriceHistory,
 } from '@/lib/api/productPriceHistory/mutations'
-import {
+import type {
   ProductPriceHistoryId,
   NewProductPriceHistoryParams,
-  UpdateProductPriceHistoryParams,
+  UpdateProductPriceHistoryParams} from '@/lib/db/schema/productPriceHistory';
+import {
   productPriceHistoryIdSchema,
   insertProductPriceHistoryParams,
   updateProductPriceHistoryParams,
 } from '@/lib/db/schema/productPriceHistory'
 
 const handleErrors = (e: unknown) => {
-  const errMsg = 'Error, please try again.'
-  if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg
+  const errorMessage = 'Error, please try again.'
+  if (e instanceof Error) return e.message.length > 0 ? e.message : errorMessage
   if (e && typeof e === 'object' && 'error' in e) {
-    const errAsStr = e.error as string
-    return errAsStr.length > 0 ? errAsStr : errMsg
+    const errorAsString = e.error as string
+    return errorAsString.length > 0 ? errorAsString : errorMessage
   }
-  return errMsg
+  return errorMessage
 }
 
 const revalidateProductPriceHistories = () => revalidatePath('/product-price-history')
@@ -34,8 +35,8 @@ export const createProductPriceHistoryAction = async (
     const payload = insertProductPriceHistoryParams.parse(input)
     await createProductPriceHistory(payload)
     revalidateProductPriceHistories()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }
 
@@ -46,8 +47,8 @@ export const updateProductPriceHistoryAction = async (
     const payload = updateProductPriceHistoryParams.parse(input)
     await updateProductPriceHistory(payload.id, payload)
     revalidateProductPriceHistories()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }
 
@@ -56,7 +57,7 @@ export const deleteProductPriceHistoryAction = async (input: ProductPriceHistory
     const payload = productPriceHistoryIdSchema.parse({ id: input })
     await deleteProductPriceHistory(payload.id)
     revalidateProductPriceHistories()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }

@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm'
 import { varchar, timestamp, pgTable, uniqueIndex } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { z } from 'zod'
+import type { z } from 'zod'
 
 import { type getSupermarkets } from '@/lib/api/supermarkets/queries'
 

@@ -6,23 +6,24 @@ import {
   deleteShoppingProduct,
   updateShoppingProduct,
 } from '@/lib/api/shoppingProducts/mutations'
-import {
+import type {
   ShoppingProductId,
   NewShoppingProductParams,
-  UpdateShoppingProductParams,
+  UpdateShoppingProductParams} from '@/lib/db/schema/shoppingProducts';
+import {
   shoppingProductIdSchema,
   insertShoppingProductParams,
   updateShoppingProductParams,
 } from '@/lib/db/schema/shoppingProducts'
 
 const handleErrors = (e: unknown) => {
-  const errMsg = 'Error, please try again.'
-  if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg
+  const errorMessage = 'Error, please try again.'
+  if (e instanceof Error) return e.message.length > 0 ? e.message : errorMessage
   if (e && typeof e === 'object' && 'error' in e) {
-    const errAsStr = e.error as string
-    return errAsStr.length > 0 ? errAsStr : errMsg
+    const errorAsString = e.error as string
+    return errorAsString.length > 0 ? errorAsString : errorMessage
   }
-  return errMsg
+  return errorMessage
 }
 
 const revalidateShoppingProducts = () => revalidatePath('/shopping-products')
@@ -32,8 +33,8 @@ export const createShoppingProductAction = async (input: NewShoppingProductParam
     const payload = insertShoppingProductParams.parse(input)
     await createShoppingProduct(payload)
     revalidateShoppingProducts()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }
 
@@ -44,8 +45,8 @@ export const updateShoppingProductAction = async (
     const payload = updateShoppingProductParams.parse(input)
     await updateShoppingProduct(payload.id, payload)
     revalidateShoppingProducts()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }
 
@@ -54,7 +55,7 @@ export const deleteShoppingProductAction = async (input: ShoppingProductId) => {
     const payload = shoppingProductIdSchema.parse({ id: input })
     await deleteShoppingProduct(payload.id)
     revalidateShoppingProducts()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }

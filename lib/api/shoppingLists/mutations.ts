@@ -1,9 +1,10 @@
 import { db } from '@/lib/db/index'
 import { and, eq } from 'drizzle-orm'
-import {
+import type {
   ShoppingListId,
   NewShoppingListParams,
-  UpdateShoppingListParams,
+  UpdateShoppingListParams} from '@/lib/db/schema/shoppingLists';
+import {
   updateShoppingListSchema,
   insertShoppingListSchema,
   shoppingLists,
@@ -20,8 +21,8 @@ export const createShoppingList = async (shoppingList: NewShoppingListParams) =>
   try {
     const [s] = await db.insert(shoppingLists).values(newShoppingList).returning()
     return { shoppingList: s }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }
@@ -49,8 +50,8 @@ export const updateShoppingList = async (
       )
       .returning()
     return { shoppingList: s }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }
@@ -70,8 +71,8 @@ export const deleteShoppingList = async (id: ShoppingListId) => {
       )
       .returning()
     return { shoppingList: s }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }

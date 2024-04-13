@@ -12,14 +12,14 @@ const runMigrate = async () => {
   neonConfig.fetchConnectionCache = true
 
   const sql = neon(env.DATABASE_URL)
-  // @ts-ignore
-  const db = drizzle(sql)
+  // @ts-expect-error -
+  const database = drizzle(sql)
 
   console.log('⏳ Running migrations...')
 
   const start = Date.now()
 
-  await migrate(db, { migrationsFolder: 'lib/db/migrations' })
+  await migrate(database, { migrationsFolder: 'lib/db/migrations' })
 
   const end = Date.now()
 
@@ -28,8 +28,8 @@ const runMigrate = async () => {
   process.exit(0)
 }
 
-runMigrate().catch((err) => {
+runMigrate().catch((error) => {
   console.error('❌ Migration failed')
-  console.error(err)
+  console.error(error)
   process.exit(1)
 })

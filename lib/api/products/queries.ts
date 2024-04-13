@@ -1,10 +1,11 @@
 import { db } from '@/lib/db/index'
 import { eq, and } from 'drizzle-orm'
+import type {
+  ProductName} from '@/lib/db/schema/products';
 import {
   type ProductId,
   productIdSchema,
   products,
-  ProductName,
   productNameSchema,
 } from '@/lib/db/schema/products'
 import { supermarkets } from '@/lib/db/schema/supermarkets'

@@ -1,7 +1,8 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
-import { ZodSchema } from 'zod'
+import type { FormEvent} from 'react';
+import { useState } from 'react'
+import type { ZodSchema } from 'zod'
 
 type EntityZodErrors<T> = Partial<Record<keyof T, string[] | undefined>>
 
@@ -12,12 +13,11 @@ export function useValidatedForm<Entity>(insertEntityZodSchema: ZodSchema) {
 
   const handleChange = (event: FormEvent<HTMLFormElement>) => {
     const target = event.target as EventTarget
-    if (
+    if ((
       target instanceof HTMLInputElement ||
       target instanceof HTMLSelectElement ||
       target instanceof HTMLTextAreaElement
-    ) {
-      if (!(target instanceof HTMLInputElement && target.type === 'submit')) {
+    ) && !(target instanceof HTMLInputElement && target.type === 'submit')) {
         const field = target.name as keyof Entity
         const result = insertEntityZodSchema.safeParse({
           [field]: target.value,
@@ -26,12 +26,11 @@ export function useValidatedForm<Entity>(insertEntityZodSchema: ZodSchema) {
           ? undefined
           : result.error.flatten().fieldErrors[field]
 
-        setErrors((prev) => ({
-          ...prev,
+        setErrors((previous) => ({
+          ...previous,
           [field]: fieldError,
         }))
       }
-    }
   }
   return { errors, setErrors, handleChange, hasErrors }
 }

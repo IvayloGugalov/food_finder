@@ -2,7 +2,7 @@ import {
   type Supermarket,
   type CompleteSupermarket,
 } from '@/lib/db/schema/supermarkets'
-import { OptimisticAction } from '@/lib/utils'
+import type { OptimisticAction } from '@/lib/utils'
 import { useOptimistic } from 'react'
 
 export type TAddOptimistic = (action: OptimisticAction<Supermarket>) => void
@@ -23,20 +23,24 @@ export const useOptimisticSupermarkets = (supermarkets: CompleteSupermarket[]) =
       }
 
       switch (action.action) {
-        case 'create':
+        case 'create': {
           return currentState.length === 0
             ? [optimisticSupermarket]
             : [...currentState, optimisticSupermarket]
-        case 'update':
+        }
+        case 'update': {
           return currentState.map((item) =>
             item.id === data.id ? { ...item, ...optimisticSupermarket } : item
           )
-        case 'delete':
+        }
+        case 'delete': {
           return currentState.map((item) =>
             item.id === data.id ? { ...item, id: 'delete' } : item
           )
-        default:
+        }
+        default: {
           return currentState
+        }
       }
     }
   )

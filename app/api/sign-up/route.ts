@@ -55,11 +55,11 @@ export const POST = async (request: NextRequest) => {
         Location: '/dashboard', // redirect to profile page
       },
     })
-  } catch (e) {
+  } catch (error) {
     // this part depends on the database you're using
     // check for unique constraint error in user table
-    console.log(e)
-    if (e instanceof LuciaError && e.message === 'AUTH_DUPLICATE_KEY_ID') {
+    console.log(error)
+    if (error instanceof LuciaError && error.message === 'AUTH_DUPLICATE_KEY_ID') {
       return NextResponse.json(
         {
           error: 'Username already taken',

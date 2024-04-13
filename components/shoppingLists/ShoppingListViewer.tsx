@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/accordion'
 import { getShoppingProductsForShoppingListId } from '@/lib/api/shoppingProducts/queries'
 import { checkAuth } from '@/lib/auth/utils'
-import { CompleteShoppingList, ShoppingListId } from '@/lib/db/schema/shoppingLists'
+import type { CompleteShoppingList, ShoppingListId } from '@/lib/db/schema/shoppingLists'
 import moment from 'moment'
 import { Suspense } from 'react'
 import { Product } from '../products/Product'
@@ -22,7 +22,7 @@ export default async function ShoppingListViewer({
       <ul>
         <Accordion type='multiple' className='w-full'>
           {shoppingLists.map((shoppingList) => (
-            <AccordionItem value={shoppingList.id}>
+            <AccordionItem key={shoppingList.id} value={shoppingList.id}>
               <AccordionTrigger>
                 <div className='flex items-start gap-2'>
                   <div>From {moment(shoppingList.weekDayStart).format('D-MMM-YY')}</div>

@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
+import type {
+  CompleteShoppingProduct} from '@/lib/db/schema/shoppingProducts';
 import {
-  type ShoppingProduct,
-  CompleteShoppingProduct,
+  type ShoppingProduct
 } from '@/lib/db/schema/shoppingProducts'
 import Modal from '@/components/shared/Modal'
 import { type Product, type ProductId } from '@/lib/db/schema/products'

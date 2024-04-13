@@ -6,17 +6,18 @@ import {
   deleteProduct,
   updateProduct,
 } from '@/lib/api/products/mutations'
-import {
+import type {
   ProductId,
   NewProductParams,
   UpdateProductParams,
+  CompleteProduct} from '@/lib/db/schema/products';
+import {
   productIdSchema,
   insertProductParams,
-  updateProductParams,
-  CompleteProduct,
+  updateProductParams
 } from '@/lib/db/schema/products'
 import { getShoppingListByCurrentDate } from '@/lib/api/shoppingLists/queries'
-import { ShoppingList } from '@/lib/db/schema/shoppingLists'
+import type { ShoppingList } from '@/lib/db/schema/shoppingLists'
 import { getStartAndEndDateOfCurrentWeek, getUtcNow } from '@/lib/utils/dateExt'
 import { createShoppingListAction } from './shoppingLists'
 import {
@@ -28,13 +29,13 @@ import { updateShoppingProductParams } from '@/lib/db/schema/shoppingProducts'
 import { Action } from '@/lib/utils'
 
 const handleErrors = (e: unknown) => {
-  const errMsg = 'Error, please try again.'
-  if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg
+  const errorMessage = 'Error, please try again.'
+  if (e instanceof Error) return e.message.length > 0 ? e.message : errorMessage
   if (e && typeof e === 'object' && 'error' in e) {
-    const errAsStr = e.error as string
-    return errAsStr.length > 0 ? errAsStr : errMsg
+    const errorAsString = e.error as string
+    return errorAsString.length > 0 ? errorAsString : errorMessage
   }
-  return errMsg
+  return errorMessage
 }
 
 const revalidateProducts = () => revalidatePath('/products')
@@ -44,8 +45,8 @@ export const createProductAction = async (input: NewProductParams) => {
     const payload = insertProductParams.parse(input)
     await createProduct(payload)
     revalidateProducts()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }
 
@@ -54,8 +55,8 @@ export const updateProductAction = async (input: UpdateProductParams) => {
     const payload = updateProductParams.parse(input)
     await updateProduct(payload.id, payload)
     revalidateProducts()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }
 
@@ -64,8 +65,8 @@ export const deleteProductAction = async (input: ProductId) => {
     const payload = productIdSchema.parse({ id: input })
     await deleteProduct(payload.id)
     revalidateProducts()
-  } catch (e) {
-    return handleErrors(e)
+  } catch (error) {
+    return handleErrors(error)
   }
 }
 
@@ -93,8 +94,8 @@ export const handleAddProductToCurrentWeekShoppingList = async (
         return { values: handleErrors(result), action: 'update' }
       }
       shoppingList = result.shoppingList
-    } catch (e) {
-      return { values: handleErrors(e), action: 'update' }
+    } catch (error) {
+      return { values: handleErrors(error), action: 'update' }
     }
   }
 
@@ -128,9 +129,9 @@ export const handleAddProductToCurrentWeekShoppingList = async (
     }
 
     return result
-  } catch (e) {
+  } catch (error) {
     return {
-      values: handleErrors(e),
+      values: handleErrors(error),
       action: pendingShoppingProduct ? 'create' : 'update',
     }
   }

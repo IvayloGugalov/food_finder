@@ -46,10 +46,10 @@ export const POST = async (request: NextRequest) => {
         Location: '/dashboard', // redirect to profile page
       },
     })
-  } catch (e) {
+  } catch (error) {
     if (
-      e instanceof LuciaError &&
-      (e.message === 'AUTH_INVALID_KEY_ID' || e.message === 'AUTH_INVALID_PASSWORD')
+      error instanceof LuciaError &&
+      (error.message === 'AUTH_INVALID_KEY_ID' || error.message === 'AUTH_INVALID_PASSWORD')
     ) {
       // user does not exist or invalid password
       return NextResponse.json(

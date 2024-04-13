@@ -121,9 +121,9 @@ const ShoppingProductForm = ({
         }
         onSuccess(editing ? 'update' : 'create', error ? errorFormatted : undefined)
       })
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        setErrors(e.flatten().fieldErrors)
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setErrors(error.flatten().fieldErrors)
       }
     }
   }

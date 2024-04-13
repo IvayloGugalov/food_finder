@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
-import { type ShoppingList, CompleteShoppingList } from '@/lib/db/schema/shoppingLists'
+import type { CompleteShoppingList } from '@/lib/db/schema/shoppingLists';
+import { type ShoppingList } from '@/lib/db/schema/shoppingLists'
 import Modal from '@/components/shared/Modal'
 
 import { useOptimisticShoppingLists } from '@/app/(app)/shopping-lists/useOptimisticShoppingLists'

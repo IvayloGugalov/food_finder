@@ -13,60 +13,48 @@ import {
   updateProductPriceHistoryParams,
 } from '@/lib/db/schema/productPriceHistory'
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const validatedData = insertProductPriceHistoryParams.parse(await req.json())
+    const validatedData = insertProductPriceHistoryParams.parse(await request.json())
     const { productPriceHistory } = await createProductPriceHistory(validatedData)
 
     revalidatePath('/productPriceHistory') // optional - assumes you will have named route same as entity
 
     return NextResponse.json(productPriceHistory, { status: 201 })
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: err.issues }, { status: 400 })
-    } else {
-      return NextResponse.json({ error: err }, { status: 500 })
-    }
+  } catch (error) {
+    return error instanceof z.ZodError ? NextResponse.json({ error: error.issues }, { status: 400 }) : NextResponse.json({ error: error }, { status: 500 });
   }
 }
 
-export async function PUT(req: Request) {
+export async function PUT(request: Request) {
   try {
-    const { searchParams } = new URL(req.url)
+    const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
 
-    const validatedData = updateProductPriceHistoryParams.parse(await req.json())
-    const validatedParams = productPriceHistoryIdSchema.parse({ id })
+    const validatedData = updateProductPriceHistoryParams.parse(await request.json())
+    const validatedParameters = productPriceHistoryIdSchema.parse({ id })
 
     const { productPriceHistory } = await updateProductPriceHistory(
-      validatedParams.id,
+      validatedParameters.id,
       validatedData
     )
 
     return NextResponse.json(productPriceHistory, { status: 200 })
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: err.issues }, { status: 400 })
-    } else {
-      return NextResponse.json(err, { status: 500 })
-    }
+  } catch (error) {
+    return error instanceof z.ZodError ? NextResponse.json({ error: error.issues }, { status: 400 }) : NextResponse.json(error, { status: 500 });
   }
 }
 
-export async function DELETE(req: Request) {
+export async function DELETE(request: Request) {
   try {
-    const { searchParams } = new URL(req.url)
+    const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
 
-    const validatedParams = productPriceHistoryIdSchema.parse({ id })
-    const { productPriceHistory } = await deleteProductPriceHistory(validatedParams.id)
+    const validatedParameters = productPriceHistoryIdSchema.parse({ id })
+    const { productPriceHistory } = await deleteProductPriceHistory(validatedParameters.id)
 
     return NextResponse.json(productPriceHistory, { status: 200 })
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: err.issues }, { status: 400 })
-    } else {
-      return NextResponse.json(err, { status: 500 })
-    }
+  } catch (error) {
+    return error instanceof z.ZodError ? NextResponse.json({ error: error.issues }, { status: 400 }) : NextResponse.json(error, { status: 500 });
   }
 }

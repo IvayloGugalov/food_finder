@@ -1,9 +1,10 @@
 import { db } from '@/lib/db/index'
 import { eq } from 'drizzle-orm'
-import {
+import type {
   ShoppingProductId,
   NewShoppingProductParams,
-  UpdateShoppingProductParams,
+  UpdateShoppingProductParams} from '@/lib/db/schema/shoppingProducts';
+import {
   updateShoppingProductSchema,
   insertShoppingProductSchema,
   shoppingProducts,
@@ -17,8 +18,8 @@ export const createShoppingProduct = async (
   try {
     const [s] = await db.insert(shoppingProducts).values(newShoppingProduct).returning()
     return { shoppingProduct: s }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }
@@ -39,8 +40,8 @@ export const updateShoppingProduct = async (
       .returning()
 
     return { shoppingProduct: s }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }
@@ -54,8 +55,8 @@ export const deleteShoppingProduct = async (id: ShoppingProductId) => {
       .where(eq(shoppingProducts.id, shoppingProductId!))
       .returning()
     return { shoppingProduct: s }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }

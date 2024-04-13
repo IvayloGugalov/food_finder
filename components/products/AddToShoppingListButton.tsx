@@ -1,6 +1,6 @@
 'use client'
 
-import { MouseEventHandler } from 'react'
+import type { MouseEventHandler } from 'react'
 import { Button } from '../ui/button'
 
 export const AddToShoppingListButton = ({

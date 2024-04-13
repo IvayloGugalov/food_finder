@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { handleAddProductToCurrentWeekShoppingList } from '@/lib/actions/products'
-import { CompleteProduct } from '@/lib/db/schema/products'
-import { Action } from '@/lib/utils'
+import type { CompleteProduct } from '@/lib/db/schema/products'
+import type { Action } from '@/lib/utils'
 import { useBackPath } from '@/components/shared/BackButton'
+import type {
+  ShoppingProduct} from '@/lib/db/schema/shoppingProducts';
 import {
-  ShoppingProduct,
   insertShoppingProductParams,
 } from '@/lib/db/schema/shoppingProducts'
 import { useValidatedForm } from './useValidatedForm'
@@ -52,9 +53,9 @@ export function useAddShoppingProduct() {
           error.values ? errorFormatted : undefined
         )
       })
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        setErrors(e.flatten().fieldErrors)
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setErrors(error.flatten().fieldErrors)
       }
     }
   }

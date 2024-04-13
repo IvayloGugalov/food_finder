@@ -10,29 +10,29 @@ type Errors = { [K in keyof FormInput]: string[] }
 export default function Home() {
   const [sending, setSending] = useState(false)
   const [errors, setErrors] = useState<Errors | null>(null)
-  const nameInputRef = useRef<HTMLInputElement>(null)
-  const emailInputRef = useRef<HTMLInputElement>(null)
+  const nameInputReference = useRef<HTMLInputElement>(null)
+  const emailInputReference = useRef<HTMLInputElement>(null)
   const sendEmail = async () => {
     setSending(true)
     setErrors(null)
     try {
       const payload = emailSchema.parse({
-        name: nameInputRef.current?.value,
-        email: emailInputRef.current?.value,
+        name: nameInputReference.current?.value,
+        email: emailInputReference.current?.value,
       })
       console.log(payload)
-      const req = await fetch('/api/email', {
+      const request = await fetch('/api/email', {
         method: 'POST',
         body: JSON.stringify(payload),
         headers: {
           'Content-Type': 'application/json',
         },
       })
-      const { id } = await req.json()
+      const { id } = await request.json()
       if (id) alert('Successfully sent!')
-    } catch (err) {
-      if (err instanceof z.ZodError) {
-        setErrors(err.flatten().fieldErrors as Errors)
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setErrors(error.flatten().fieldErrors as Errors)
       }
     } finally {
       setSending(false)
@@ -90,10 +90,10 @@ export default function Home() {
             type='text'
             placeholder='Tim'
             name='name'
-            ref={nameInputRef}
+            ref={nameInputReference}
             className={`
               w-full px-3 py-2 text-sm rounded-md border focus:outline-neutral-700 ${
-                !!errors?.name ? 'border-red-700' : 'border-neutral-200'
+                errors?.name ? 'border-red-700' : 'border-neutral-200'
               }`}
           />
         </div>
@@ -103,10 +103,10 @@ export default function Home() {
             type='email'
             placeholder='tim@apple.com'
             name='email'
-            ref={emailInputRef}
+            ref={emailInputReference}
             className={`
               w-full px-3 py-2 text-sm rounded-md border focus:outline-neutral-700 ${
-                !!errors?.email ? 'border-red-700' : 'border-neutral-200'
+                errors?.email ? 'border-red-700' : 'border-neutral-200'
               }`}
           />
         </div>

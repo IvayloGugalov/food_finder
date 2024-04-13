@@ -5,7 +5,7 @@ import { env } from '@/lib/env.mjs'
 neonConfig.fetchConnectionCache = true
 
 export const sql = neon(env.DATABASE_URL)
-// @ts-ignore
+// @ts-expect-error
 export const db = drizzle(sql)
 
 export const pool = new Pool({ connectionString: env.DATABASE_URL })

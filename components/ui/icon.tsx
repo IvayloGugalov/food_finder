@@ -1,7 +1,7 @@
 import { iconPaths } from '@/lib/icons'
 import { HTMLAttributes } from 'react'
 
-type Props = {
+type Properties = {
   id?: string
   icon: keyof typeof iconPaths
   color?: string
@@ -10,12 +10,12 @@ type Props = {
   [key: string]: any
 }
 
-const Icon = ({ id, icon, color, gradient, size, ...props }: Props) => {
+const Icon = ({ id, icon, color, gradient, size, ...properties }: Properties) => {
   const iconPath = iconPaths[icon]
   const gradientId = 'icon-gradient-' + Math.round(Math.random() * 10e12).toString(36)
 
   return (
-    <div {...props}>
+    <div {...properties}>
       <svg
         xmlns='http://www.w3.org/2000/svg'
         width='40'

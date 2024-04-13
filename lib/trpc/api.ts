@@ -40,12 +40,12 @@ export const api = createTRPCProxyClient<typeof appRouter>({
       ({ op }) =>
         observable((observer) => {
           createContext()
-            .then((ctx) => {
+            .then((context) => {
               return callProcedure({
                 procedures: appRouter._def.procedures,
                 path: op.path,
                 rawInput: op.input,
-                ctx,
+                ctx: context,
                 type: op.type,
               })
             })
@@ -53,8 +53,8 @@ export const api = createTRPCProxyClient<typeof appRouter>({
               observer.next({ result: { data } })
               observer.complete()
             })
-            .catch((cause: TRPCErrorResponse) => {
-              observer.error(TRPCClientError.from(cause))
+            .catch((error: TRPCErrorResponse) => {
+              observer.error(TRPCClientError.from(error))
             })
         }),
   ],

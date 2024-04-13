@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
-import { Product as ProductType } from '@/lib/db/schema/products'
+import type { Product as ProductType } from '@/lib/db/schema/products'
 import {
   Card,
   CardHeader,

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-import { CompleteProduct } from '@/lib/db/schema/products'
+import type { CompleteProduct } from '@/lib/db/schema/products'
 import { type Supermarket } from '@/lib/db/schema/supermarkets'
 import { useOptimisticProducts } from '@/app/(app)/products/useOptimisticProducts'
 import { Button } from '@/components/ui/button'
@@ -49,23 +49,23 @@ export default function ProductList({
       optimisticProducts,
       state.selectedSupermarket
     )
-    setState((prevState) => ({
-      ...prevState,
+    setState((previousState) => ({
+      ...previousState,
       filteredProducts: sortProductsByCategory(filtered),
     }))
   }, [optimisticProducts, state.selectedSupermarket])
 
   const onSuperMarketChanged = (supermarketId: string) => {
-    setState((prevState) => ({
-      ...prevState,
+    setState((previousState) => ({
+      ...previousState,
       selectedSupermarket: supermarketId,
     }))
   }
 
   const sortProductsByCategory = (products: CompleteProduct[]) => {
     const b = products.sort((a, b) => {
-      const categoryA = a.category ?? '\uffff' // Treat null as an empty string or any other default value
-      const categoryB = b.category ?? '\uffff' // Treat null as an empty string or any other default value
+      const categoryA = a.category ?? '\uFFFF' // Treat null as an empty string or any other default value
+      const categoryB = b.category ?? '\uFFFF' // Treat null as an empty string or any other default value
       if (categoryA > categoryB) return -1
       if (categoryA < categoryB) return 1
       return 0
@@ -116,8 +116,8 @@ export default function ProductList({
               <ProductCard
                 product={product}
                 handleSubmit={() => {
-                  setState((prevState) => ({
-                    ...prevState,
+                  setState((previousState) => ({
+                    ...previousState,
                     productToAddToShoppingListId: product.id,
                   }))
                   handleSubmitProductToShoppingList(product)

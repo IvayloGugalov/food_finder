@@ -3,7 +3,7 @@ import { varchar, timestamp, real, pgTable, unique } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { products } from './products'
-import { getAllProductPriceHistories, getProductPriceHistories } from '@/lib/api/productPriceHistory/queries'
+import type { getAllProductPriceHistories, getProductPriceHistories } from '@/lib/api/productPriceHistory/queries'
 
 import { nanoid, timestamps } from '@/lib/utils'
 

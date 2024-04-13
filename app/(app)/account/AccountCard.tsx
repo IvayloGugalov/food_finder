@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card'
 
-interface AccountCardProps {
+interface AccountCardProperties {
   params: {
     header: string
     description: string
@@ -9,7 +9,7 @@ interface AccountCardProps {
   children: React.ReactNode
 }
 
-export function AccountCard({ params, children }: AccountCardProps) {
+export function AccountCard({ params, children }: AccountCardProperties) {
   const { header, description } = params
   return (
     <Card>

@@ -5,7 +5,8 @@ import {
   productPriceHistoryIdSchema,
   productPriceHistory,
 } from '@/lib/db/schema/productPriceHistory'
-import { ProductId, productIdSchema, products } from '@/lib/db/schema/products'
+import type { ProductId} from '@/lib/db/schema/products';
+import { productIdSchema, products } from '@/lib/db/schema/products'
 
 export const getAllProductPriceHistories = async () => {
   const rows = await db

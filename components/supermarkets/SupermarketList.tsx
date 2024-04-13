@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
-import { type Supermarket, CompleteSupermarket } from '@/lib/db/schema/supermarkets'
+import type { CompleteSupermarket } from '@/lib/db/schema/supermarkets';
+import { type Supermarket } from '@/lib/db/schema/supermarkets'
 import Modal from '@/components/shared/Modal'
 
 import { useOptimisticSupermarkets } from '@/app/(app)/supermarkets/useOptimisticSupermarkets'

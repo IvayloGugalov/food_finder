@@ -1,7 +1,7 @@
 'use client'
 
 import { useOptimistic, useState } from 'react'
-import { TAddOptimistic } from '@/app/(app)/products/useOptimisticProducts'
+import type { TAddOptimistic } from '@/app/(app)/products/useOptimisticProducts'
 import { type Product } from '@/lib/db/schema/products'
 import { cn } from '@/lib/utils'
 
@@ -10,7 +10,7 @@ import Modal from '@/components/shared/Modal'
 import ProductForm from '@/components/products/ProductForm'
 import { type Supermarket, type SupermarketId } from '@/lib/db/schema/supermarkets'
 import ProductDetails from '@/components/products/ProductDetails'
-import { CompleteProductPriceHistory } from '@/lib/db/schema/productPriceHistory'
+import type { CompleteProductPriceHistory } from '@/lib/db/schema/productPriceHistory'
 
 export default function OptimisticProduct({
   product,

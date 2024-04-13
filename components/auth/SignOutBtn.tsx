@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 
-export default function SignOutBtn() {
+export default function SignOutButton() {
   const router = useRouter()
   const handleSignOut = async () => {
     const response = await fetch('/api/sign-out', {

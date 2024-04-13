@@ -6,9 +6,11 @@ import {
   shoppingProducts,
   shoppingProductProductAndShoppingListIdSchema,
 } from '@/lib/db/schema/shoppingProducts'
-import { ProductId, products } from '@/lib/db/schema/products'
+import type { ProductId} from '@/lib/db/schema/products';
+import { products } from '@/lib/db/schema/products'
+import type {
+  ShoppingListId} from '@/lib/db/schema/shoppingLists';
 import {
-  ShoppingListId,
   shoppingListIdSchema,
   shoppingLists,
 } from '@/lib/db/schema/shoppingLists'
