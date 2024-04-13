@@ -1,8 +1,9 @@
 import { createProducts } from '@/lib/api/products/mutations'
 import { getSupermarkets } from '@/lib/api/supermarkets/queries'
-import { NewProductParams } from '@/lib/db/schema/products'
-import { Supermarket } from '@/lib/db/schema/supermarkets'
-import { NextRequest, NextResponse } from 'next/server'
+import type { NewProductParams } from '@/lib/db/schema/products'
+import type { Supermarket } from '@/lib/db/schema/supermarkets'
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   console.log(request.headers.get('authorization'))
@@ -35,29 +36,28 @@ export async function GET(request: NextRequest) {
     }[]
 
     const products = data
-      .map((x) =>
+      .flatMap((x) =>
         x.products.map((p) => ({
           ...p,
           name:
             p.name.length > 256 ? p.name.split(/\s+/).slice(0, 10).join(' ') : p.name,
-          price: p.price ? parseFloat(`${p.price}`.replace(/,/, '.')) : 0,
+          price: p.price ? Number.parseFloat(`${p.price}`.replace(/,/, '.')) : 0,
           oldPrice: p.oldPrice
-            ? parseFloat(`${p.oldPrice}`.replace(/,/, '.'))
+            ? Number.parseFloat(`${p.oldPrice}`.replace(/,/, '.'))
             : p.oldPrice,
           supermarketId: mapIdByName(x.supermarket, supermarkets) ?? 'ivoG',
         }))
       )
-      .flat()
 
-    console.log('products: ', products.length)
+    console.log('products:', products.length)
 
     await createProducts(products)
 
     return new NextResponse('Success', {
       status: 200,
     })
-  } catch (exception) {
-    console.error(JSON.stringify(exception))
+  } catch (error) {
+    console.error(JSON.stringify(error))
 
     return new Response('Unable to add products', {
       status: 400,
