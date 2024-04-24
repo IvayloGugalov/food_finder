@@ -7,5 +7,10 @@ neonConfig.fetchConnectionCache = true
 export const sql = neon(env.DATABASE_URL)
 // @ts-expect-error
 export const db = drizzle(sql)
-
 export const pool = new Pool({ connectionString: env.DATABASE_URL })
+
+
+export const sql_log = neon(env.DATABASE_APP_LOGS_URL)
+// @ts-expect-error
+export const db_log = drizzle(sql_log)
+export const pool_log = new Pool({ connectionString: env.DATABASE_APP_LOGS_URL })

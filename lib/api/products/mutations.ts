@@ -1,10 +1,11 @@
-import { db } from '@/lib/db/index'
+import { db, db_log } from '@/lib/db/index'
 import { and, eq } from 'drizzle-orm'
 import type { NeonDbError } from '@neondatabase/serverless'
 import type {
   ProductId,
   NewProductParams,
-  UpdateProductParams} from '@/lib/db/schema/products';
+  UpdateProductParams,
+} from '@/lib/db/schema/products'
 import {
   updateProductSchema,
   insertProductSchema,
@@ -14,6 +15,10 @@ import {
 
 import { createProductPriceHistory } from '@/lib/api/productPriceHistory/mutations'
 import { getProductByName } from './queries'
+import {
+  insertProductCreateLogSchema,
+  productCreateLog,
+} from '@/lib/db/schema_log_db/productCreateLog'
 
 type NewProductType = {
   name: string
@@ -43,7 +48,15 @@ export const createProduct = async (product: NewProductParams) => {
       return await createProductAndPriceHistory(newProduct)
     }
     const errorMessage = error.message ?? 'Error, please try again'
-    console.error(errorMessage)
+
+    const insertProductCreateLog = insertProductCreateLogSchema.parse({
+      productName: product.name,
+      productPrice: product.price,
+      productOldPrice: product.oldPrice,
+      errorMessage: errorMessage,
+    })
+    await db_log.insert(productCreateLog).values(insertProductCreateLog).catch()
+    console.error('createProduct', errorMessage)
     throw { error: errorMessage }
   }
 }
@@ -76,10 +89,7 @@ export const createProducts = async (productsToInsert: NewProductParams[]) => {
     insertProductSchema.parse(product)
   )
   try {
-    await db
-      .insert(products)
-      .values(newProducts)
-      .onConflictDoNothing()
+    await db.insert(products).values(newProducts).onConflictDoNothing()
   } catch (error) {
     const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)

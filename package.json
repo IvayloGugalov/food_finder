@@ -9,6 +9,7 @@
     "lint": "next lint",
     "lint-fix": "next lint --fix",
     "db:generate": "drizzle-kit generate:pg",
+    "db:generate-log-db": "drizzle-kit generate:pg --config=drizzle.config.log_db.ts",
     "db:migrate": "tsx lib/db/migrate.ts",
     "db:drop": "drizzle-kit drop",
     "db:pull": "drizzle-kit introspect:pg",

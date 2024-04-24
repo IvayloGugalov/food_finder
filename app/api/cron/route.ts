@@ -1,8 +1,8 @@
-import { createProducts } from '@/lib/api/products/mutations'
+import { createProduct } from '@/lib/api/products/mutations'
 import { getSupermarkets } from '@/lib/api/supermarkets/queries'
 import type { NewProductParams } from '@/lib/db/schema/products'
 import type { Supermarket } from '@/lib/db/schema/supermarkets'
-import type { NextRequest} from 'next/server';
+import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
@@ -35,23 +35,23 @@ export async function GET(request: NextRequest) {
       products: NewProductParams[]
     }[]
 
-    const products = data
-      .flatMap((x) =>
-        x.products.map((p) => ({
-          ...p,
-          name:
-            p.name.length > 256 ? p.name.split(/\s+/).slice(0, 10).join(' ') : p.name,
-          price: p.price ? Number.parseFloat(`${p.price}`.replace(/,/, '.')) : 0,
-          oldPrice: p.oldPrice
-            ? Number.parseFloat(`${p.oldPrice}`.replace(/,/, '.'))
-            : p.oldPrice,
-          supermarketId: mapIdByName(x.supermarket, supermarkets) ?? 'ivoG',
-        }))
-      )
+    const products = data.flatMap((x) =>
+      x.products.map((p) => ({
+        ...p,
+        name: p.name.length > 256 ? p.name.split(/\s+/).slice(0, 10).join(' ') : p.name,
+        price: p.price ? Number.parseFloat(`${p.price}`.replace(/,/, '.')) : 0,
+        oldPrice: p.oldPrice
+          ? Number.parseFloat(`${p.oldPrice}`.replace(/,/, '.'))
+          : p.oldPrice,
+        supermarketId: mapIdByName(x.supermarket, supermarkets) ?? 'ivoG',
+      }))
+    )
 
     console.log('products:', products.length)
 
-    await createProducts(products)
+    const promises = products.map((product) => createProduct(product))
+    const results = await Promise.allSettled(promises)
+    console.log(results)
 
     return new NextResponse('Success', {
       status: 200,
