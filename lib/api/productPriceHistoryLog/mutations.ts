@@ -1,6 +1,7 @@
 import { db_log } from '@/lib/db/index'
+import type {
+  NewProductPriceHistoryLogParams} from '@/lib/db/schema_log_db/productPriceHistoryLog';
 import {
-  NewProductPriceHistoryLogParams,
   insertProductPriceHistoryLogSchema,
   productPriceHistoryLog,
 } from '@/lib/db/schema_log_db/productPriceHistoryLog'
@@ -16,8 +17,8 @@ export const createProductPriceHistoryLog = async (
       .values(newProductPriceHistoryLog)
       .returning()
     return { productPriceHistoryLog: p }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }

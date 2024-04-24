@@ -11,19 +11,15 @@ import {
   updateProductPriceHistoryLogParams
 } from "@/lib/db/schema_log_db/productPriceHistoryLog";
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const validatedData = insertProductPriceHistoryLogParams.parse(await req.json());
+    const validatedData = insertProductPriceHistoryLogParams.parse(await request.json());
     const { productPriceHistoryLog } = await createProductPriceHistoryLog(validatedData);
 
     revalidatePath("/productPriceHistoryLog"); // optional - assumes you will have named route same as entity
 
     return NextResponse.json(productPriceHistoryLog, { status: 201 });
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: err.issues }, { status: 400 });
-    } else {
-      return NextResponse.json({ error: err }, { status: 500 });
-    }
+  } catch (error) {
+    return error instanceof z.ZodError ? NextResponse.json({ error: error.issues }, { status: 400 }) : NextResponse.json({ error: error }, { status: 500 });
   }
 }

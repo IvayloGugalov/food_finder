@@ -1,6 +1,7 @@
 import { db_log } from '@/lib/db/index'
+import type {
+  NewProductCreateLogParams} from '@/lib/db/schema_log_db/productCreateLog';
 import {
-  NewProductCreateLogParams,
   insertProductCreateLogSchema,
   productCreateLog,
 } from '@/lib/db/schema_log_db/productCreateLog'
@@ -15,8 +16,8 @@ export const createProductCreateLog = async (
       .values(newProductCreateLog)
       .returning()
     return { createProduct: c }
-  } catch (err) {
-    const message = (err as Error).message ?? 'Error, please try again'
+  } catch (error) {
+    const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
     throw { error: message }
   }
