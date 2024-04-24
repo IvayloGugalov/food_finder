@@ -28,18 +28,18 @@ export const createProductPriceHistory = async (
     return { productPriceHistory: p }
   } catch (error) {
     const errorMessage = (error as Error).message ?? 'Error, please try again'
-    const insertProductPriceHistoryLog = insertProductPriceHistoryLogSchema.parse({
-      productId: newProductPriceHistory.productId,
-      productPrice: newProductPriceHistory.price,
-      productOldPrice: newProductPriceHistory.oldPrice,
-      productWeekDayStart: newProductPriceHistory.weekDayStart,
-      productWeekDayEnd: newProductPriceHistory.weekDayEnd,
-      errorMessage: errorMessage,
-    })
-    await db_log
-      .insert(productPriceHistoryLog)
-      .values(insertProductPriceHistoryLog)
-      .catch()
+    // const insertProductPriceHistoryLog = insertProductPriceHistoryLogSchema.parse({
+    //   productId: newProductPriceHistory.productId,
+    //   productPrice: newProductPriceHistory.price,
+    //   productOldPrice: newProductPriceHistory.oldPrice,
+    //   productWeekDayStart: newProductPriceHistory.weekDayStart,
+    //   productWeekDayEnd: newProductPriceHistory.weekDayEnd,
+    //   errorMessage: errorMessage,
+    // })
+    // await db_log
+    //   .insert(productPriceHistoryLog)
+    //   .values(insertProductPriceHistoryLog)
+    //   .catch()
 
     console.error('createProductPriceHistory', errorMessage)
     throw { error: errorMessage }

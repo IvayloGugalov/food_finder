@@ -1,5 +1,13 @@
 {
-
+  "git": {
+    "deploymentEnabled": {
+      "production": false,
+      "master": false
+    }
+  },
+  "github": {
+    "autoAlias": false
+  },
   "crons": [
     {
       "path": "/api/cron",

@@ -49,9 +49,14 @@ export async function GET(request: NextRequest) {
 
     console.log('products:', products.length)
 
-    const promises = products.map((product) => createProduct(product))
-    const results = await Promise.allSettled(promises)
-    console.log(results)
+    products.forEach(async p => {
+      const x = await createProduct(p)
+      console.log(x)
+    })
+    // const promises = products.map(async (product) => await createProduct(product))
+    // console.log(promises)
+    // const results = await Promise.all(promises)
+    // console.log(results)
 
     return new NextResponse('Success', {
       status: 200,

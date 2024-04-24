@@ -49,13 +49,13 @@ export const createProduct = async (product: NewProductParams) => {
     }
     const errorMessage = error.message ?? 'Error, please try again'
 
-    const insertProductCreateLog = insertProductCreateLogSchema.parse({
-      productName: product.name,
-      productPrice: product.price,
-      productOldPrice: product.oldPrice,
-      errorMessage: errorMessage,
-    })
-    await db_log.insert(productCreateLog).values(insertProductCreateLog).catch()
+    // const insertProductCreateLog = insertProductCreateLogSchema.parse({
+    //   productName: product.name,
+    //   productPrice: product.price,
+    //   productOldPrice: product.oldPrice,
+    //   errorMessage: errorMessage,
+    // })
+    // await db_log.insert(productCreateLog).values(insertProductCreateLog).catch(x => console.log(JSON.stringify(x)))
     console.error('createProduct', errorMessage)
     throw { error: errorMessage }
   }
