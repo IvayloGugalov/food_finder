@@ -1,4 +1,4 @@
-import { getProductById, getProducts } from '@/lib/api/products/queries'
+import { getProductById, getAllProducts } from '@/lib/api/products/queries'
 import { publicProcedure, router } from '@/lib/server/trpc'
 import {
   productIdSchema,
@@ -12,8 +12,8 @@ import {
 } from '@/lib/api/products/mutations'
 
 export const productsRouter = router({
-  getProducts: publicProcedure.query(async () => {
-    return getProducts()
+  getAllProducts: publicProcedure.query(async () => {
+    return getAllProducts()
   }),
   getProductById: publicProcedure.input(productIdSchema).query(async ({ input }) => {
     return getProductById(input.id)

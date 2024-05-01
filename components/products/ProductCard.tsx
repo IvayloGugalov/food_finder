@@ -30,7 +30,13 @@ export const ProductCard = ({
         className='hover:ring-1 ring-inset ring-slate-400 cursor-pointer'
         onClick={() => router.push(`/products/${product.id}`)}
       >
-        <CardContent className='pt-4'>
+        <CardContent className='pt-4 relative'>
+          <div className='absolute top-2 right-2'>
+            <p className='text-sm font-medium leading-none text-slate-400'>
+              {product.validUntil && `until ${product.validUntil}`} in{' '}
+              {product.supermarket?.name}
+            </p>
+          </div>
           <div className='flex justify-center'>
             <Image
               src={product.picUrl ?? '/no-image.jpg'}
@@ -60,7 +66,10 @@ export const ProductCard = ({
             <p className='text-sm font-light text-slate-400'>{product.oldPrice} лв.</p>
           )}
         </div>
-        <AddToShoppingListButton onClick={() => handleSubmit(product)} disabled={disabled} />
+        <AddToShoppingListButton
+          onClick={() => handleSubmit(product)}
+          disabled={disabled}
+        />
       </CardFooter>
     </Card>
   )

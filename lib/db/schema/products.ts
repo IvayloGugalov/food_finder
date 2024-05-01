@@ -11,7 +11,7 @@ import {
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { supermarkets } from './supermarkets'
-import { type getProducts } from '@/lib/api/products/queries'
+import { type getAllProducts } from '@/lib/api/products/queries'
 
 import { nanoid, timestamps } from '@/lib/utils'
 
@@ -79,7 +79,7 @@ export type UpdateProductParams = z.infer<typeof updateProductParams>
 export type ProductId = z.infer<typeof productIdSchema>['id']
 export type ProductName = z.infer<typeof productNameSchema>['name']
 
-// this type infers the return from getProducts() - meaning it will include any joins
+// this type infers the return from getAllProducts() - meaning it will include any joins
 export type CompleteProduct = Awaited<
-  ReturnType<typeof getProducts>
+  ReturnType<typeof getAllProducts>
 >['products'][number]

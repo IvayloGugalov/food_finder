@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import type { CompleteProduct } from '@/lib/db/schema/products'
 import { type Supermarket } from '@/lib/db/schema/supermarkets'
@@ -17,6 +17,11 @@ import {
 import { ProductCard } from './ProductCard'
 import { useAddShoppingProduct } from '@/lib/hooks/useAddShoppingProduct'
 
+import { cn } from '@/lib/utils'
+import Icon from '@/components/ui/icon'
+import { Input } from '@/components/ui/input'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+
 export default function ProductList({
   products,
   supermarkets,
@@ -24,6 +29,10 @@ export default function ProductList({
   products: CompleteProduct[]
   supermarkets: Supermarket[]
 }) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParameters = useSearchParams()
+
   const {
     errors,
     hasErrors,
@@ -38,8 +47,7 @@ export default function ProductList({
   )
 
   const [state, setState] = useState({
-    // TODO: REMOVE!!!!
-    selectedSupermarket: 'zun7p06i1uu4cu6x3joy1' as string,
+    selectedSupermarket: '' as string,
     filteredProducts: [] as CompleteProduct[],
     productToAddToShoppingListId: '',
   })
@@ -58,7 +66,8 @@ export default function ProductList({
   const onSuperMarketChanged = (supermarketId: string) => {
     setState((previousState) => ({
       ...previousState,
-      selectedSupermarket: supermarketId,
+      selectedSupermarket:
+        previousState.selectedSupermarket === supermarketId ? '' : supermarketId,
     }))
   }
 
@@ -81,9 +90,59 @@ export default function ProductList({
     return products.filter((p) => p.supermarket?.id === supermarketId)
   }
 
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const parameters = new URLSearchParams(searchParameters.toString())
+      parameters.set(name, value)
+
+      return parameters.toString()
+    },
+    [searchParameters]
+  )
+
+  const handleSubmit = async (event: React.SyntheticEvent) => {
+    event.preventDefault()
+    const target = event.target as HTMLFormElement
+    const form = new FormData(target)
+    const { productsSearch } = Object.fromEntries(form.entries()) as {
+      productsSearch: string
+    }
+
+    // startTransition(async () => {
+    //   const res = await fetch('/api/account', {
+    //     method: 'PUT',
+    //     body: JSON.stringify({ productsSearch }),
+    //     headers: { 'Content-Type': 'application/json' },
+    //   })
+    //   console.log(res.body)
+    //   // router.refresh()
+    // })
+  }
+
   return (
     <div>
-      <div className='absolute right-0 top-0 '>
+      <form
+        // onSubmit={handleSubmit}
+        className='w-full flex items-center  rounded-2xl py-2 px-4'
+      >
+        <Input
+          name='productsSearch'
+          placeholder='Search products...'
+          type='text'
+          className={cn('shadow-md')}
+        />
+        <Button type='submit' variant={'ghost'}>
+          <Icon
+            icon='search'
+            size='30'
+            className={
+              'hover:scale-110 transition-transform duration-300 cursor-pointer'
+            }
+          />
+        </Button>
+      </form>
+
+      {/* <div className='absolute right-0 top-0 '>
         <Button
           onClick={() =>
             console.error('Adding new product by hand is not implemented ')
@@ -92,8 +151,10 @@ export default function ProductList({
         >
           +
         </Button>
-      </div>
-      <div className='py-4'>
+      </div> */}
+
+      <div className='py-4 flex gap-14'>
+        {/* TODO: onValueChange={(e) => router.push(pathname + '?' + createQueryString('supermarket', e))} */}
         <Select onValueChange={onSuperMarketChanged}>
           <SelectTrigger className='w-[240px]'>
             <SelectValue placeholder='Choose supermarket' />
@@ -106,6 +167,29 @@ export default function ProductList({
             ))}
           </SelectContent>
         </Select>
+
+        <div className='flex gap-2 items-center'>
+          <div>
+            <p>Per page:</p>
+          </div>
+          <Select
+            defaultValue={searchParameters.get('filter') ?? '25'}
+            onValueChange={(e) =>
+              router.push(pathname + '?' + createQueryString('filter', e))
+            }
+          >
+            <SelectTrigger className='w-[80px]'>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='w-[80px]'>
+              {[25, 50, 100].map((index) => (
+                <SelectItem key={index} value={index.toString()}>
+                  {index}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       {state.filteredProducts.length === 0 ? (
         <EmptyState />

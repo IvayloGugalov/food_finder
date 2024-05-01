@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 
 import { getShoppingProductById } from '@/lib/api/shoppingProducts/queries'
-import { getProducts } from '@/lib/api/products/queries'
+import { getAllProducts } from '@/lib/api/products/queries'
 import { getShoppingLists } from '@/lib/api/shoppingLists/queries'
 import OptimisticShoppingProduct from '@/app/(app)/shopping-products/[shoppingProductId]/OptimisticShoppingProduct'
 
@@ -25,7 +25,7 @@ export default async function ShoppingProductPage({
 
 const ShoppingProduct = async ({ id }: { id: string }) => {
   const { shoppingProduct } = await getShoppingProductById(id)
-  const { products } = await getProducts()
+  const { products } = await getAllProducts()
   const { shoppingLists } = await getShoppingLists()
 
   if (!shoppingProduct) notFound()

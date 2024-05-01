@@ -26,6 +26,7 @@ rules:
   'unicorn/no-null': 'off'
   'unicorn/prefer-top-level-await': 'off'
   'unicorn/no-process-exit': 'off'
+  'unicorn/no-array-for-each': 'off'
   '@typescript-eslint/no-non-null-asserted-optional-chain': 'warn'
   '@typescript-eslint/no-explicit-any': 'warn'
   '@typescript-eslint/ban-ts-comment': 'off'
