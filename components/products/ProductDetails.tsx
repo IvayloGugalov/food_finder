@@ -12,13 +12,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../ui/table'
+} from '@/components/ui/table'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '../ui/accordion'
+} from '@/components/ui/accordion'
 
 const ProductDetails = ({
   product,

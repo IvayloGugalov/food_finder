@@ -9,7 +9,7 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '../ui/card'
+} from '@/components/ui/card'
 import { AddToShoppingListButton } from './AddToShoppingListButton'
 
 export const Product = ({

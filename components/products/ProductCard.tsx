@@ -10,9 +10,9 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '../ui/card'
+} from '@/components/ui/card'
 import { AddToShoppingListButton } from './AddToShoppingListButton'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export const ProductCard = ({
   product,

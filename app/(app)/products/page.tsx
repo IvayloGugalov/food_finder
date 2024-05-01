@@ -13,6 +13,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
+import type { SupermarketId } from '@/lib/db/schema/supermarkets'
 
 export const revalidate = 0
 
@@ -20,12 +21,12 @@ type Properties = {
   searchParams: {
     page?: string
     limit?: string
+    supermarket?: string
   }
 }
 
-const { count } = await getTotalProductsCount()
-
 export default async function ProductsPage({ searchParams }: Properties) {
+  const { count: productsCount } = await getTotalProductsCount(searchParams.supermarket)
   let page = Number.parseInt(searchParams.page ?? '1', 10)
   page = !page || page < 1 ? 1 : page
   let limit = Number.parseInt(searchParams.limit ?? '25', 10)
@@ -38,18 +39,26 @@ export default async function ProductsPage({ searchParams }: Properties) {
           <h1 className='font-semibold text-2xl my-2'>Products</h1>
         </div>
 
-        <Products currentPage={page} limit={limit} />
+        <Products currentPage={page} limit={limit} supermarketId={searchParams.supermarket} />
 
         <Suspense fallback={<Loading />}>
-          <PaginationX page={page} limit={limit} />
+          <PaginationX page={page} limit={limit} productsCount={productsCount} />
         </Suspense>
       </div>
     </main>
   )
 }
 
-function PaginationX({ page, limit }: { page: number; limit: number }) {
-  const totalPages = Math.ceil(count / limit)
+function PaginationX({
+  page,
+  limit,
+  productsCount,
+}: {
+  page: number
+  limit: number
+  productsCount: number
+}) {
+  const totalPages = Math.ceil(productsCount / limit)
   const previousPage = page - 1 > 0 ? page - 1 : 1
   const nextPage = page + 1
   const limitParameter = (!limit || limit !== 25) && `&limit=${limit}`
@@ -107,14 +116,17 @@ function PaginationX({ page, limit }: { page: number; limit: number }) {
 const Products = async ({
   currentPage,
   limit,
+  supermarketId
 }: {
   currentPage: number
-  limit: number
+  limit: number,
+  supermarketId?: SupermarketId
 }) => {
   await checkAuth()
 
-  const { products } = await getPaginatedProducts(currentPage, limit)
+  const { products } = await getPaginatedProducts(currentPage, limit, supermarketId)
   const { supermarkets } = await getSupermarkets()
+
   return (
     <Suspense fallback={<Loading />}>
       <ProductList products={products} supermarkets={supermarkets} />
