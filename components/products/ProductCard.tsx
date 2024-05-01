@@ -12,6 +12,7 @@ import {
   CardFooter,
 } from '../ui/card'
 import { AddToShoppingListButton } from './AddToShoppingListButton'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 
 export const ProductCard = ({
   product,
@@ -54,12 +55,21 @@ export const ProductCard = ({
             />
           </div>
         </CardContent>
-        <CardHeader className='pt-0 pb-4 text-center lg:text-left'>
-          <CardTitle>{product.name}</CardTitle>
+        <CardHeader className='pt-0 pl-4 pb-4 text-center lg:text-left max-w-[310px]'>
+          <CardTitle className='text-xl truncate text-ellipsis overflow-hidden text-nowrap'>
+            <TooltipProvider>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger>{product.name}</TooltipTrigger>
+                {product.name.length >= 24 && (
+                  <TooltipContent align='start'>{product.name}</TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
+          </CardTitle>
           <CardDescription>{product.category}</CardDescription>
         </CardHeader>
       </div>
-      <CardFooter className='py-[0.75rem] lg:px-6 px-2 border-t-[1px] flex-row justify-between space-x-2'>
+      <CardFooter className='py-[0.75rem] lg:px-4 border-t-[1px] flex-row justify-between space-x-2'>
         <div className='flex flex-col gap-1'>
           <p className='text-lg font-medium leading-none'>{product.price} лв.</p>
           {product.oldPrice && (
