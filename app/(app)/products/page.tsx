@@ -1,5 +1,4 @@
 import { Suspense } from 'react'
-import { headers } from 'next/headers'
 
 import Loading from '@/app/loading'
 import ProductList from '@/components/products/ProductList'
@@ -53,7 +52,7 @@ function PaginationX({ page, limit }: { page: number; limit: number }) {
   const totalPages = Math.ceil(count / limit)
   const previousPage = page - 1 > 0 ? page - 1 : 1
   const nextPage = page + 1
-  const limitParam = (!limit || limit !== 25) && `&limit=${limit}`
+  const limitParameter = (!limit || limit !== 25) && `&limit=${limit}`
 
   const pageNumbers = []
   for (let index = page - 3; index <= page + 3; index++) {
@@ -67,20 +66,20 @@ function PaginationX({ page, limit }: { page: number; limit: number }) {
       <PaginationContent>
         {page !== 1 && (
           <PaginationItem>
-            <PaginationPrevious href={`?page=${previousPage}${limitParam}`} />
+            <PaginationPrevious href={`?page=${previousPage}${limitParameter}`} />
           </PaginationItem>
         )}
         {!pageNumbers.includes(1) && (
           <div className='flex items-center gap-2'>
             <PaginationItem>
-              <PaginationLink href={`?page=1${limitParam}`}>1</PaginationLink>
+              <PaginationLink href={`?page=1${limitParameter}`}>1</PaginationLink>
             </PaginationItem>
             <p className='text-md font-medium leading-none'>...</p>
           </div>
         )}
         {pageNumbers.map((p) => (
           <PaginationItem key={p}>
-            <PaginationLink isActive={page === p} href={`?page=${p}${limitParam}`}>
+            <PaginationLink isActive={page === p} href={`?page=${p}${limitParameter}`}>
               {p}
             </PaginationLink>
           </PaginationItem>
@@ -89,7 +88,7 @@ function PaginationX({ page, limit }: { page: number; limit: number }) {
           <div className='flex items-center gap-2'>
             <p className='text-md font-medium leading-none'>...</p>
             <PaginationItem>
-              <PaginationLink href={`?page=${totalPages}${limitParam}`}>
+              <PaginationLink href={`?page=${totalPages}${limitParameter}`}>
                 {totalPages}
               </PaginationLink>
             </PaginationItem>
@@ -97,7 +96,7 @@ function PaginationX({ page, limit }: { page: number; limit: number }) {
         )}
         {page !== totalPages && (
           <PaginationItem>
-            <PaginationNext href={`?page=${nextPage}${limitParam}`} />
+            <PaginationNext href={`?page=${nextPage}${limitParameter}`} />
           </PaginationItem>
         )}
       </PaginationContent>
