@@ -1,7 +1,8 @@
 name: Linting
 
 on:
-  push:
+  workflow_run:
+    types: [requested]
     branches: "**"
 
 jobs:
@@ -19,6 +20,6 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
-      
+
       - name: Lint
         run: npm run lint

@@ -39,10 +39,19 @@ export default async function ProductsPage({ searchParams }: Properties) {
           <h1 className='font-semibold text-2xl my-2'>Products</h1>
         </div>
 
-        <Products currentPage={page} limit={limit} supermarketId={searchParams.supermarket} />
+        <Products
+          currentPage={page}
+          limit={limit}
+          supermarketId={searchParams.supermarket}
+        />
 
         <Suspense fallback={<Loading />}>
-          <PaginationX page={page} limit={limit} productsCount={productsCount} />
+          <PaginationX
+            page={page}
+            limit={limit}
+            productsCount={productsCount}
+            supermarketId={searchParams.supermarket}
+          />
         </Suspense>
       </div>
     </main>
@@ -53,15 +62,18 @@ function PaginationX({
   page,
   limit,
   productsCount,
+  supermarketId,
 }: {
   page: number
   limit: number
   productsCount: number
+  supermarketId?: SupermarketId
 }) {
   const totalPages = Math.ceil(productsCount / limit)
   const previousPage = page - 1 > 0 ? page - 1 : 1
   const nextPage = page + 1
   const limitParameter = (!limit || limit !== 25) && `&limit=${limit}`
+  const supermarketParameter = supermarketId && `?supermarket=${supermarketId}`
 
   const pageNumbers = []
   for (let index = page - 3; index <= page + 3; index++) {
@@ -75,20 +87,27 @@ function PaginationX({
       <PaginationContent>
         {page !== 1 && (
           <PaginationItem>
-            <PaginationPrevious href={`?page=${previousPage}${limitParameter}`} />
+            <PaginationPrevious
+              href={`${supermarketParameter}&page=${previousPage}${limitParameter}`}
+            />
           </PaginationItem>
         )}
         {!pageNumbers.includes(1) && (
           <div className='flex items-center gap-2'>
             <PaginationItem>
-              <PaginationLink href={`?page=1${limitParameter}`}>1</PaginationLink>
+              <PaginationLink href={`${supermarketParameter}&page=1${limitParameter}`}>
+                1
+              </PaginationLink>
             </PaginationItem>
             <p className='text-md font-medium leading-none'>...</p>
           </div>
         )}
         {pageNumbers.map((p) => (
           <PaginationItem key={p}>
-            <PaginationLink isActive={page === p} href={`?page=${p}${limitParameter}`}>
+            <PaginationLink
+              isActive={page === p}
+              href={`${supermarketParameter}&page=${p}${limitParameter}`}
+            >
               {p}
             </PaginationLink>
           </PaginationItem>
@@ -97,7 +116,9 @@ function PaginationX({
           <div className='flex items-center gap-2'>
             <p className='text-md font-medium leading-none'>...</p>
             <PaginationItem>
-              <PaginationLink href={`?page=${totalPages}${limitParameter}`}>
+              <PaginationLink
+                href={`${supermarketParameter}&page=${totalPages}${limitParameter}`}
+              >
                 {totalPages}
               </PaginationLink>
             </PaginationItem>
@@ -105,7 +126,9 @@ function PaginationX({
         )}
         {page !== totalPages && (
           <PaginationItem>
-            <PaginationNext href={`?page=${nextPage}${limitParameter}`} />
+            <PaginationNext
+              href={`${supermarketParameter}&page=${nextPage}${limitParameter}`}
+            />
           </PaginationItem>
         )}
       </PaginationContent>
@@ -116,10 +139,10 @@ function PaginationX({
 const Products = async ({
   currentPage,
   limit,
-  supermarketId
+  supermarketId,
 }: {
   currentPage: number
-  limit: number,
+  limit: number
   supermarketId?: SupermarketId
 }) => {
   await checkAuth()

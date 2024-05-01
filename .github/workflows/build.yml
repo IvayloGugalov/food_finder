@@ -2,7 +2,8 @@ name: Run Build
 
 on:
   push:
-    branches: "**"
+    branches:
+      - production
 
 jobs:
   lint:
@@ -19,6 +20,6 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
-      
+
       - name: Build
         run: npm run build
