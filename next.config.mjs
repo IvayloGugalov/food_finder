@@ -12,13 +12,13 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'cdncloudcart.com',
         port: '',
-        pathname: '/16398/products/images/**',
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'kaufland.media.schwarz',
         port: '',
-        pathname: '/is/image/schwarz/**',
+        pathname: '/**',
       },
       {
         protocol: 'https',

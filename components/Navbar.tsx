@@ -17,9 +17,12 @@ export default function Navbar() {
 
   return (
     <div>
-      <div className='flex border-b mb-4 pb-2 w-full justify-end'>
+      <div className='flex border-b justify-end'>
         <Button variant={'link'} onClick={() => router.push('/shopping-lists')}>
-          <Icon icon='shopping-cart' className={'hover:scale-110 transition-transform duration-300'} />
+          <Icon
+            icon='shopping-cart'
+            className={'hover:scale-110 transition-transform duration-300'}
+          />
         </Button>
       </div>
 
@@ -50,7 +53,6 @@ export default function Navbar() {
             </ul>
           </div>
         ) : null}
-        div
       </div>
     </div>
   )

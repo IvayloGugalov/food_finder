@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import Loading from '@/app/loading'
 import ProductPriceHistoryList from '@/components/productPriceHistory/ProductPriceHistoryList'
 import { getAllProductPriceHistories } from '@/lib/api/productPriceHistory/queries'
-import { getProducts } from '@/lib/api/products/queries'
+import { getAllProducts } from '@/lib/api/products/queries'
 
 export const revalidate = 0
 
@@ -22,7 +22,7 @@ export default async function ProductPriceHistoryPage() {
 
 const ProductPriceHistory = async () => {
   const { productPriceHistory } = await getAllProductPriceHistories()
-  const { products } = await getProducts()
+  const { products } = await getAllProducts()
   return (
     <Suspense fallback={<Loading />}>
       <ProductPriceHistoryList

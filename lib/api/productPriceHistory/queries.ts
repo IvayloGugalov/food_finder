@@ -1,5 +1,5 @@
 import { db } from '@/lib/db/index'
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
 import {
   type ProductPriceHistoryId,
   productPriceHistoryIdSchema,
@@ -22,6 +22,7 @@ export const getProductPriceHistories = async (id: ProductId) => {
   const rows = await db
     .select({ productPriceHistory: productPriceHistory, product: products })
     .from(productPriceHistory)
+    .where(and(eq(productPriceHistory.productId, productId)))
     .leftJoin(products, eq(products.id, productId))
   const p = rows.map((r) => ({ ...r.productPriceHistory, product: r.product }))
   return { productPriceHistory: p }

@@ -10,7 +10,7 @@ type Properties = {
   [key: string]: any
 }
 
-const Icon = ({ id, icon, color, gradient, size, ...properties }: Properties) => {
+const Icon = ({ id, icon, color, gradient, size = '40', ...properties }: Properties) => {
   const iconPath = iconPaths[icon]
   const gradientId = 'icon-gradient-' + Math.round(Math.random() * 10e12).toString(36)
 
@@ -18,8 +18,8 @@ const Icon = ({ id, icon, color, gradient, size, ...properties }: Properties) =>
     <div {...properties}>
       <svg
         xmlns='http://www.w3.org/2000/svg'
-        width='40'
-        height='40'
+        width={size}
+        height={size}
         viewBox='0 0 256 256'
         aria-hidden='true'
         stroke={gradient ? `url(#${gradientId})` : color}
