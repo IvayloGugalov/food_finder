@@ -1,10 +1,9 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import type { CompleteProduct } from '@/lib/db/schema/products'
-import { type Supermarket } from '@/lib/db/schema/supermarkets'
-import { useOptimisticProducts } from '@/app/(app)/products/useOptimisticProducts'
+import type { CompleteProduct, ProductId } from '@/lib/db/schema/products'
+import type { SupermarketId, Supermarket } from '@/lib/db/schema/supermarkets'
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
 import {
@@ -13,7 +12,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select'
+} from '@/components/ui/select'
 import { ProductCard } from './ProductCard'
 import { useAddShoppingProduct } from '@/lib/hooks/useAddShoppingProduct'
 
@@ -29,6 +28,7 @@ export default function ProductList({
   products: CompleteProduct[]
   supermarkets: Supermarket[]
 }) {
+  const [key, setKey] = useState<number>(+Date.now())
   const router = useRouter()
   const pathname = usePathname()
   const searchParameters = useSearchParams()
@@ -41,59 +41,40 @@ export default function ProductList({
     handleSubmitProductToShoppingList,
   } = useAddShoppingProduct()
 
-  const { optimisticProducts, addOptimisticProduct } = useOptimisticProducts(
-    products,
-    supermarkets
-  )
-
-  const [state, setState] = useState({
-    selectedSupermarket: '' as string,
-    filteredProducts: [] as CompleteProduct[],
-    productToAddToShoppingListId: '',
+  const [state, setState] = useState<{
+    selectedSupermarket?: SupermarketId
+    productToAddToShoppingListId?: ProductId
+  }>({
+    selectedSupermarket: undefined,
+    productToAddToShoppingListId: undefined,
   })
 
-  useEffect(() => {
-    const filtered = filterProductsBySupermarket(
-      optimisticProducts,
-      state.selectedSupermarket
-    )
-    setState((previousState) => ({
-      ...previousState,
-      filteredProducts: sortProductsByCategory(filtered),
-    }))
-  }, [optimisticProducts, state.selectedSupermarket])
-
   const onSuperMarketChanged = (supermarketId: string) => {
-    setState((previousState) => ({
-      ...previousState,
-      selectedSupermarket:
-        previousState.selectedSupermarket === supermarketId ? '' : supermarketId,
-    }))
-  }
+    setState((previousState) => {
+      router.push(pathname + '?' + createQueryString('supermarket', supermarketId))
 
-  const sortProductsByCategory = (products: CompleteProduct[]) => {
-    const b = products.sort((a, b) => {
-      const categoryA = a.category ?? '\uFFFF' // Treat null as an empty string or any other default value
-      const categoryB = b.category ?? '\uFFFF' // Treat null as an empty string or any other default value
-      if (categoryA > categoryB) return -1
-      if (categoryA < categoryB) return 1
-      return 0
+      return {
+        ...previousState,
+        selectedSupermarket: supermarketId,
+      }
     })
-    return b
-  }
-
-  const filterProductsBySupermarket = (
-    products: CompleteProduct[],
-    supermarketId: string
-  ) => {
-    if (!supermarketId) return products
-    return products.filter((p) => p.supermarket?.id === supermarketId)
   }
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const parameters = new URLSearchParams(searchParameters.toString())
       parameters.set(name, value)
+
+      return parameters.toString()
+    },
+    [searchParameters]
+  )
+
+  const removeQueryString = useCallback(
+    (name: string) => {
+      const parameters = new URLSearchParams(searchParameters.toString())
+      //  eslint-disable-next-line drizzle/enforce-delete-with-where
+      parameters.delete(name)
 
       return parameters.toString()
     },
@@ -154,28 +135,51 @@ export default function ProductList({
       </div> */}
 
       <div className='py-4 flex gap-14'>
-        {/* TODO: onValueChange={(e) => router.push(pathname + '?' + createQueryString('supermarket', e))} */}
-        <Select onValueChange={onSuperMarketChanged}>
-          <SelectTrigger className='w-[240px]'>
-            <SelectValue placeholder='Choose supermarket' />
-          </SelectTrigger>
-          <SelectContent>
-            {supermarkets.map((market) => (
-              <SelectItem key={market.id} value={market.id}>
-                {market.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+
+        <div className='flex flex-row items-start justify-start gap-2'>
+          {state.selectedSupermarket && (
+            <Button
+              type='reset'
+              variant={'secondary'}
+              size={'icon'}
+              onClick={() => {
+                setKey(+Date.now())
+                router.push(pathname + '?' + removeQueryString('supermarket'))
+                setState((previous) => ({
+                  ...previous,
+                  selectedSupermarket: undefined,
+                }))
+              }}
+            >
+              <Icon color='white' icon='trash' size='25' />
+            </Button>
+          )}
+          <Select
+            key={key}
+            value={state.selectedSupermarket ?? ''}
+            onValueChange={onSuperMarketChanged}
+          >
+            <SelectTrigger className='w-[240px]'>
+              <SelectValue placeholder='Choose supermarket' />
+            </SelectTrigger>
+            <SelectContent>
+              {supermarkets.map((market) => (
+                <SelectItem key={market.id} value={market.id}>
+                  {market.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         <div className='flex gap-2 items-center'>
           <div>
             <p>Per page:</p>
           </div>
           <Select
-            defaultValue={searchParameters.get('filter') ?? '25'}
+            defaultValue={searchParameters.get('limit') ?? '25'}
             onValueChange={(e) =>
-              router.push(pathname + '?' + createQueryString('filter', e))
+              router.push(pathname + '?' + createQueryString('limit', e))
             }
           >
             <SelectTrigger className='w-[80px]'>
@@ -191,11 +195,11 @@ export default function ProductList({
           </Select>
         </div>
       </div>
-      {state.filteredProducts.length === 0 ? (
+
+      {products.length === 0 ?
         <EmptyState />
-      ) : (
-        <ul className='grid auto-rows-[430px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4'>
-          {state.filteredProducts.map((product) => (
+      : <ul className='grid auto-rows-[430px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4'>
+          {products.map((product) => (
             <form key={product.id} onChange={handleChange}>
               <ProductCard
                 product={product}
@@ -214,7 +218,7 @@ export default function ProductList({
             </form>
           ))}
         </ul>
-      )}
+      }
     </div>
   )
 }

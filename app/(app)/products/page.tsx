@@ -1,5 +1,4 @@
 import { Suspense } from 'react'
-import { headers } from 'next/headers'
 
 import Loading from '@/app/loading'
 import ProductList from '@/components/products/ProductList'
@@ -14,6 +13,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
+import type { SupermarketId } from '@/lib/db/schema/supermarkets'
 
 export const revalidate = 0
 
@@ -21,12 +21,12 @@ type Properties = {
   searchParams: {
     page?: string
     limit?: string
+    supermarket?: string
   }
 }
 
-const { count } = await getTotalProductsCount()
-
 export default async function ProductsPage({ searchParams }: Properties) {
+  const { count: productsCount } = await getTotalProductsCount(searchParams.supermarket)
   let page = Number.parseInt(searchParams.page ?? '1', 10)
   page = !page || page < 1 ? 1 : page
   let limit = Number.parseInt(searchParams.limit ?? '25', 10)
@@ -39,21 +39,29 @@ export default async function ProductsPage({ searchParams }: Properties) {
           <h1 className='font-semibold text-2xl my-2'>Products</h1>
         </div>
 
-        <Products currentPage={page} limit={limit} />
+        <Products currentPage={page} limit={limit} supermarketId={searchParams.supermarket} />
 
         <Suspense fallback={<Loading />}>
-          <PaginationX page={page} limit={limit} />
+          <PaginationX page={page} limit={limit} productsCount={productsCount} />
         </Suspense>
       </div>
     </main>
   )
 }
 
-function PaginationX({ page, limit }: { page: number; limit: number }) {
-  const totalPages = Math.ceil(count / limit)
+function PaginationX({
+  page,
+  limit,
+  productsCount,
+}: {
+  page: number
+  limit: number
+  productsCount: number
+}) {
+  const totalPages = Math.ceil(productsCount / limit)
   const previousPage = page - 1 > 0 ? page - 1 : 1
   const nextPage = page + 1
-  const limitParam = (!limit || limit !== 25) && `&limit=${limit}`
+  const limitParameter = (!limit || limit !== 25) && `&limit=${limit}`
 
   const pageNumbers = []
   for (let index = page - 3; index <= page + 3; index++) {
@@ -67,20 +75,20 @@ function PaginationX({ page, limit }: { page: number; limit: number }) {
       <PaginationContent>
         {page !== 1 && (
           <PaginationItem>
-            <PaginationPrevious href={`?page=${previousPage}${limitParam}`} />
+            <PaginationPrevious href={`?page=${previousPage}${limitParameter}`} />
           </PaginationItem>
         )}
         {!pageNumbers.includes(1) && (
           <div className='flex items-center gap-2'>
             <PaginationItem>
-              <PaginationLink href={`?page=1${limitParam}`}>1</PaginationLink>
+              <PaginationLink href={`?page=1${limitParameter}`}>1</PaginationLink>
             </PaginationItem>
             <p className='text-md font-medium leading-none'>...</p>
           </div>
         )}
         {pageNumbers.map((p) => (
           <PaginationItem key={p}>
-            <PaginationLink isActive={page === p} href={`?page=${p}${limitParam}`}>
+            <PaginationLink isActive={page === p} href={`?page=${p}${limitParameter}`}>
               {p}
             </PaginationLink>
           </PaginationItem>
@@ -89,7 +97,7 @@ function PaginationX({ page, limit }: { page: number; limit: number }) {
           <div className='flex items-center gap-2'>
             <p className='text-md font-medium leading-none'>...</p>
             <PaginationItem>
-              <PaginationLink href={`?page=${totalPages}${limitParam}`}>
+              <PaginationLink href={`?page=${totalPages}${limitParameter}`}>
                 {totalPages}
               </PaginationLink>
             </PaginationItem>
@@ -97,7 +105,7 @@ function PaginationX({ page, limit }: { page: number; limit: number }) {
         )}
         {page !== totalPages && (
           <PaginationItem>
-            <PaginationNext href={`?page=${nextPage}${limitParam}`} />
+            <PaginationNext href={`?page=${nextPage}${limitParameter}`} />
           </PaginationItem>
         )}
       </PaginationContent>
@@ -108,14 +116,17 @@ function PaginationX({ page, limit }: { page: number; limit: number }) {
 const Products = async ({
   currentPage,
   limit,
+  supermarketId
 }: {
   currentPage: number
-  limit: number
+  limit: number,
+  supermarketId?: SupermarketId
 }) => {
   await checkAuth()
 
-  const { products } = await getPaginatedProducts(currentPage, limit)
+  const { products } = await getPaginatedProducts(currentPage, limit, supermarketId)
   const { supermarkets } = await getSupermarkets()
+
   return (
     <Suspense fallback={<Loading />}>
       <ProductList products={products} supermarkets={supermarkets} />

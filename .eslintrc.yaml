@@ -9,6 +9,8 @@ parserOptions:
   project: './tsconfig.json'
 plugins:
   - drizzle
+  - '@typescript-eslint'
+  - eslint-plugin-no-cyrillic-string
 rules:
   '@typescript-eslint/consistent-type-imports':
     - error

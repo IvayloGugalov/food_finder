@@ -1,5 +1,5 @@
 import { db } from '@/lib/db/index'
-import { eq, and, ilike, desc, sql, count } from 'drizzle-orm'
+import { eq, and, ilike, desc, count } from 'drizzle-orm'
 import type { ProductName } from '@/lib/db/schema/products'
 import {
   type ProductId,
@@ -7,10 +7,16 @@ import {
   products,
   productNameSchema,
 } from '@/lib/db/schema/products'
-import { supermarkets } from '@/lib/db/schema/supermarkets'
+import { type SupermarketId, supermarkets } from '@/lib/db/schema/supermarkets'
 
-export const getTotalProductsCount = async () => {
-  const rowsCount = await db.select({ count: count() }).from(products)
+export const getTotalProductsCount = async (supermarketId?: SupermarketId) => {
+  const rowsCount =
+    supermarketId ?
+      await db
+        .select({ count: count() })
+        .from(products)
+        .where(and(eq(products.supermarketId, supermarketId)))
+    : await db.select({ count: count() }).from(products)
 
   return { count: rowsCount[0].count }
 }
@@ -25,14 +31,29 @@ export const getAllProducts = async () => {
   return { products: p }
 }
 
-export const getPaginatedProducts = async (page = 1, pageSize = 25) => {
-  const rows = await db
-    .select({ product: products, supermarket: supermarkets })
-    .from(products)
-    .leftJoin(supermarkets, eq(products.supermarketId, supermarkets.id))
-    .orderBy(desc(products.validUntil))
-    .limit(pageSize)
-    .offset((page - 1) * pageSize)
+export const getPaginatedProducts = async (
+  page = 1,
+  pageSize = 25,
+  supermarketId?: SupermarketId
+) => {
+  const rows =
+    supermarketId ?
+      await db
+        .select({ product: products, supermarket: supermarkets })
+        .from(products)
+        .where(and(eq(products.supermarketId, supermarketId)))
+        .leftJoin(supermarkets, eq(products.supermarketId, supermarkets.id))
+        .orderBy(desc(products.validUntil))
+        .limit(pageSize)
+        .offset((page - 1) * pageSize)
+    : await db
+        .select({ product: products, supermarket: supermarkets })
+        .from(products)
+        .leftJoin(supermarkets, eq(products.supermarketId, supermarkets.id))
+        .orderBy(desc(products.validUntil))
+        .limit(pageSize)
+        .offset((page - 1) * pageSize)
+
   const p = rows.map((r) => ({ ...r.product, supermarket: r.supermarket }))
   return { products: p }
 }
