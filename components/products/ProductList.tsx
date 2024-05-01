@@ -123,7 +123,7 @@ export default function ProductList({
     <div>
       <form
         // onSubmit={handleSubmit}
-        className='w-full flex items-center  rounded-2xl py-2 px-4'
+        className='w-full flex items-center rounded-2xl py-2 px-4'
       >
         <Input
           name='productsSearch'
@@ -194,7 +194,7 @@ export default function ProductList({
       {state.filteredProducts.length === 0 ? (
         <EmptyState />
       ) : (
-        <ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
+        <ul className='grid auto-rows-[430px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4'>
           {state.filteredProducts.map((product) => (
             <form key={product.id} onChange={handleChange}>
               <ProductCard

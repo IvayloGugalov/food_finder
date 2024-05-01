@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import { headers } from 'next/headers'
 
 import Loading from '@/app/loading'
 import ProductList from '@/components/products/ProductList'
@@ -19,7 +20,7 @@ export const revalidate = 0
 type Properties = {
   searchParams: {
     page?: string
-    filter?: string
+    limit?: string
   }
 }
 
@@ -28,7 +29,7 @@ const { count } = await getTotalProductsCount()
 export default async function ProductsPage({ searchParams }: Properties) {
   let page = Number.parseInt(searchParams.page ?? '1', 10)
   page = !page || page < 1 ? 1 : page
-  let limit = Number.parseInt(searchParams.filter ?? '25', 10)
+  let limit = Number.parseInt(searchParams.limit ?? '25', 10)
   limit = !limit || limit < 25 ? 25 : limit
 
   return (
@@ -52,6 +53,7 @@ function PaginationX({ page, limit }: { page: number; limit: number }) {
   const totalPages = Math.ceil(count / limit)
   const previousPage = page - 1 > 0 ? page - 1 : 1
   const nextPage = page + 1
+  const limitParam = (!limit || limit !== 25) && `&limit=${limit}`
 
   const pageNumbers = []
   for (let index = page - 3; index <= page + 3; index++) {
@@ -65,20 +67,20 @@ function PaginationX({ page, limit }: { page: number; limit: number }) {
       <PaginationContent>
         {page !== 1 && (
           <PaginationItem>
-            <PaginationPrevious href={`?page=${previousPage}`} />
+            <PaginationPrevious href={`?page=${previousPage}${limitParam}`} />
           </PaginationItem>
         )}
         {!pageNumbers.includes(1) && (
           <div className='flex items-center gap-2'>
             <PaginationItem>
-              <PaginationLink href={'?page=1'}>1</PaginationLink>
+              <PaginationLink href={`?page=1${limitParam}`}>1</PaginationLink>
             </PaginationItem>
             <p className='text-md font-medium leading-none'>...</p>
           </div>
         )}
         {pageNumbers.map((p) => (
           <PaginationItem key={p}>
-            <PaginationLink isActive={page === p} href={`?page=${p}`}>
+            <PaginationLink isActive={page === p} href={`?page=${p}${limitParam}`}>
               {p}
             </PaginationLink>
           </PaginationItem>
@@ -87,13 +89,15 @@ function PaginationX({ page, limit }: { page: number; limit: number }) {
           <div className='flex items-center gap-2'>
             <p className='text-md font-medium leading-none'>...</p>
             <PaginationItem>
-              <PaginationLink href={`?page=${totalPages}`}>{totalPages}</PaginationLink>
+              <PaginationLink href={`?page=${totalPages}${limitParam}`}>
+                {totalPages}
+              </PaginationLink>
             </PaginationItem>
           </div>
         )}
         {page !== totalPages && (
           <PaginationItem>
-            <PaginationNext href={`?page=${nextPage}`} />
+            <PaginationNext href={`?page=${nextPage}${limitParam}`} />
           </PaginationItem>
         )}
       </PaginationContent>
