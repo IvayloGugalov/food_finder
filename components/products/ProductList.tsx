@@ -198,7 +198,7 @@ export default function ProductList({
 
       {products.length === 0 ?
         <EmptyState />
-      : <ul className='grid auto-rows-[430px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4'>
+      : <ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4'>
           {products.map((product) => (
             <form key={product.id} onChange={handleChange}>
               <ProductCard

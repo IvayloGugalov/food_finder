@@ -2,6 +2,7 @@
 
 import type { MouseEventHandler } from 'react'
 import { Button } from '@/components/ui/button'
+import Icon from '../ui/icon'
 
 export const AddToShoppingListButton = ({
   disabled,
@@ -13,12 +14,13 @@ export const AddToShoppingListButton = ({
   return (
     <Button
       type='submit'
-      className='mr-2'
       disabled={disabled}
       aria-disabled={disabled}
       onClick={onClick}
     >
-      {`Add${disabled ? 'ing' : ''}`} to shopping list{`${disabled ? '...' : ''}`}
+      {`Add${disabled ? 'ing' : ''}`} to&nbsp;
+      <Icon icon='shopping-cart' size='24' color='white' />
+      {`${disabled ? '...' : ''}`}
     </Button>
   )
 }
