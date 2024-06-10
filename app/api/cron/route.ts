@@ -35,24 +35,33 @@ export async function GET(request: NextRequest) {
       products: NewProductParams[]
     }[]
 
-    const products = data.flatMap((x) =>
-      x.products.map((p) => ({
-        ...p,
-        name: p.name.length > 256 ? p.name.split(/\s+/).slice(0, 10).join(' ') : p.name,
-        price: p.price ? Number.parseFloat(`${p.price}`.replace(/,/, '.')) : 0,
-        oldPrice: p.oldPrice
-          ? Number.parseFloat(`${p.oldPrice}`.replace(/,/, '.'))
-          : p.oldPrice,
-        supermarketId: mapIdByName(x.supermarket, supermarkets) ?? 'ivoG',
-      }))
-    )
+    const products = data
+      .flatMap((x) =>
+        x.products.map((p) => ({
+          ...p,
+          name:
+            p.name.length > 256 ? p.name.split(/\s+/).slice(0, 10).join(' ') : p.name,
+          price: p.price ? Number.parseFloat(`${p.price}`.replace(/,/, '.')) : 0,
+          oldPrice:
+            p.oldPrice ?
+              Number.parseFloat(`${p.oldPrice}`.replace(/,/, '.'))
+            : p.oldPrice,
+          supermarketId: mapIdByName(x.supermarket, supermarkets) ?? 'ivoG',
+        }))
+      )
+      .filter((p) => !!p.price)
 
     console.log('products:', products.length)
 
-    products.forEach(async p => {
-      const x = await createProduct(p)
-      console.log(x)
-    })
+    for (const product of products) {
+      try {
+        await createProduct(product)
+        await new Promise((resolve) => setTimeout(resolve, 500))
+      } catch (error) {
+        console.error('🚨 Error creating product:', error)
+      }
+    }
+
     // const promises = products.map(async (product) => await createProduct(product))
     // console.log(promises)
     // const results = await Promise.all(promises)

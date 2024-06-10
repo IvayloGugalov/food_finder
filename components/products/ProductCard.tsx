@@ -12,7 +12,12 @@ import {
   CardFooter,
 } from '@/components/ui/card'
 import { AddToShoppingListButton } from './AddToShoppingListButton'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export const ProductCard = ({
   product,
@@ -26,12 +31,12 @@ export const ProductCard = ({
   const router = useRouter()
 
   return (
-    <Card className={cn('flex flex-col justify-between')}>
+    <Card className={cn('flex flex-col justify-start h-full')}>
       <div
-        className='hover:ring-1 ring-inset ring-slate-400 cursor-pointer'
+        className='rounded-t-lg hover:ring-1 ring-inset ring-slate-400 cursor-pointer'
         onClick={() => router.push(`/products/${product.id}`)}
       >
-        <CardContent className='pt-4 relative'>
+        <CardContent className='pt-6 relative'>
           <div className='absolute top-2 right-2'>
             <p className='text-sm font-medium leading-none text-slate-400'>
               {product.validUntil && `until ${product.validUntil}`} in{' '}
@@ -56,26 +61,27 @@ export const ProductCard = ({
           </div>
         </CardContent>
         <CardHeader className='pt-0 pl-4 pb-4 text-center lg:text-left max-w-[310px]'>
-          <CardTitle className='text-xl truncate text-ellipsis overflow-hidden text-nowrap'>
+          <CardTitle className='text-xl'>
             <TooltipProvider>
               <Tooltip delayDuration={200}>
-                <TooltipTrigger>{product.name}</TooltipTrigger>
-                {product.name.length >= 24 && (
-                  <TooltipContent align='start'>{product.name}</TooltipContent>
-                )}
+                <TooltipTrigger className='max-w-full truncate'>
+                  {product.name}
+                </TooltipTrigger>
+                <TooltipContent align='start'>{product.name}</TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </CardTitle>
-          <CardDescription>{product.category}</CardDescription>
+          <CardDescription className='truncate'>{product.category}</CardDescription>
         </CardHeader>
       </div>
-      <CardFooter className='py-[0.75rem] lg:px-4 border-t-[1px] flex-row justify-between space-x-2'>
-        <div className='flex flex-col gap-1'>
+      <CardFooter className='flex justify-between items-center gap-2 py-[0.75rem] border-t-[1px]'>
+        <div>
           <p className='text-lg font-medium leading-none'>{product.price} лв.</p>
           {product.oldPrice && (
             <p className='text-sm font-light text-slate-400'>{product.oldPrice} лв.</p>
           )}
         </div>
+
         <AddToShoppingListButton
           onClick={() => handleSubmit(product)}
           disabled={disabled}

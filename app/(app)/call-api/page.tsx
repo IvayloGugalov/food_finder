@@ -100,15 +100,6 @@ export default async function GenerateAllPage() {
         <div className='flex justify-between'>
           <h1 className='font-semibold text-2xl my-2'>Generate all data</h1>
         </div>
-        <div>
-          {/* <button
-            // variant={'secondary'}
-            className='w-fit h-fit'
-            onClick={() => fetchData()}
-          >
-            Update all
-          </button> */}
-        </div>
       </div>
     </main>
   )
