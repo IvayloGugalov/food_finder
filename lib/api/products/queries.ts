@@ -43,14 +43,14 @@ export const getPaginatedProducts = async (
         .from(products)
         .where(and(eq(products.supermarketId, supermarketId)))
         .leftJoin(supermarkets, eq(products.supermarketId, supermarkets.id))
-        .orderBy(sql`${products.validUntil} desc nulls last`)
+        .orderBy(sql`${products.validUntil} desc nulls last, ${products.name} asc`)
         .limit(pageSize)
         .offset((page - 1) * pageSize)
     : await db
         .select({ product: products, supermarket: supermarkets })
         .from(products)
         .leftJoin(supermarkets, eq(products.supermarketId, supermarkets.id))
-        .orderBy(sql`${products.validUntil} desc nulls last`)
+        .orderBy(sql`${products.validUntil} desc nulls last, ${products.name} asc`)
         .limit(pageSize)
         .offset((page - 1) * pageSize)
 

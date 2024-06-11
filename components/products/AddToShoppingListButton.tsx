@@ -17,6 +17,7 @@ export const AddToShoppingListButton = ({
       disabled={disabled}
       aria-disabled={disabled}
       onClick={onClick}
+      className='w-full text-white'
     >
       {`Add${disabled ? 'ing' : ''}`} to&nbsp;
       <Icon icon='shopping-cart' size='24' color='white' />
