@@ -2,11 +2,13 @@ import { neon, neonConfig, Pool } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-http'
 import { env } from '@/lib/env.mjs'
 
+const isDev = env.NODE_ENV === 'development'
+
 neonConfig.fetchConnectionCache = true
 
 export const sql = neon(env.DATABASE_URL)
 // @ts-expect-error
-export const db = drizzle(sql)
+export const db = drizzle(sql, { logger: isDev })
 export const pool = new Pool({ connectionString: env.DATABASE_URL })
 
 

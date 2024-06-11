@@ -1,5 +1,5 @@
 import { db } from '@/lib/db/index'
-import { eq, and, ilike, desc, count } from 'drizzle-orm'
+import { eq, and, ilike, desc, count, isNotNull, sql } from 'drizzle-orm'
 import type { ProductName } from '@/lib/db/schema/products'
 import {
   type ProductId,
@@ -43,14 +43,14 @@ export const getPaginatedProducts = async (
         .from(products)
         .where(and(eq(products.supermarketId, supermarketId)))
         .leftJoin(supermarkets, eq(products.supermarketId, supermarkets.id))
-        .orderBy(desc(products.validUntil))
+        .orderBy(sql`${products.validUntil} desc nulls last`)
         .limit(pageSize)
         .offset((page - 1) * pageSize)
     : await db
         .select({ product: products, supermarket: supermarkets })
         .from(products)
         .leftJoin(supermarkets, eq(products.supermarketId, supermarkets.id))
-        .orderBy(desc(products.validUntil))
+        .orderBy(sql`${products.validUntil} desc nulls last`)
         .limit(pageSize)
         .offset((page - 1) * pageSize)
 
