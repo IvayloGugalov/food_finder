@@ -1,13 +1,13 @@
-name: Build & Lint
+name: CI
 
 on:
   workflow_run:
     types: [requested]
     branches: "**"
   pull_request:
-    branches: [main, development, production]
+    branches: "**"
   push:
-    branches: [main, development, production]
+    branches: "**"
 
 jobs:
   lint:
@@ -22,7 +22,6 @@ jobs:
         with:
           node-version: 20.x
           cache: 'npm'
-
 
       - name: Get npm cache directory
         id: npm-cache-dir
