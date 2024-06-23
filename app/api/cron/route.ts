@@ -1,4 +1,4 @@
-import { createProduct } from '@/lib/api/products/mutations'
+import { createProducts } from '@/lib/api/products/mutations'
 import { getSupermarkets } from '@/lib/api/supermarkets/queries'
 import type { NewProductParams } from '@/lib/db/schema/products'
 import type { Supermarket } from '@/lib/db/schema/supermarkets'
@@ -6,14 +6,11 @@ import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
-  console.log(request.headers.get('authorization'))
   if (request.headers.get('authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
     return new Response('Unauthorized', {
       status: 401,
     })
   }
-
-  console.log(process.env.PRODUCTS_API)
 
   if (!process.env.PRODUCTS_API) {
     return new Response('Missing API endpoint', {
@@ -43,9 +40,9 @@ export async function GET(request: NextRequest) {
             p.name.length > 256 ? p.name.split(/\s+/).slice(0, 10).join(' ') : p.name,
           price: p.price ? Number.parseFloat(`${p.price}`.replace(/,/, '.')) : 0,
           oldPrice:
-            p.oldPrice ?
-              Number.parseFloat(`${p.oldPrice}`.replace(/,/, '.'))
-            : p.oldPrice,
+            p.oldPrice
+              ? Number.parseFloat(`${p.oldPrice}`.replace(/,/, '.'))
+              : p.oldPrice,
           supermarketId: mapIdByName(x.supermarket, supermarkets) ?? 'ivoG',
         }))
       )
@@ -53,14 +50,16 @@ export async function GET(request: NextRequest) {
 
     console.log('products:', products.length)
 
-    for (const product of products) {
-      try {
-        await createProduct(product)
-        await new Promise((resolve) => setTimeout(resolve, 500))
-      } catch (error) {
-        console.error('🚨 Error creating product:', error)
-      }
-    }
+    await createProducts(products)
+
+    // for (const product of products) {
+    //   try {
+    //     await createProduct(product)
+    //     await new Promise((resolve) => setTimeout(resolve, 500))
+    //   } catch (error) {
+    //     console.error('🚨 Error creating product:', error)
+    //   }
+    // }
 
     // const promises = products.map(async (product) => await createProduct(product))
     // console.log(promises)

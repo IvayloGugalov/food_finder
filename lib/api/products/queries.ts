@@ -82,6 +82,37 @@ export const getProductByName = async (name: ProductName) => {
   return { product: p }
 }
 
+export const getProductsBasedOnNewProductsToInsert = async (
+  products: { name: string; supermarketId: string }[]
+): Promise<{
+  products: {
+    name: string
+    supermarketId: string
+    validFrom: string
+    validUntil: string
+  }[]
+}> => {
+  const whereClauses = products.map(
+    (product) => `('${product.name.replaceAll('\'', "''")}', '${product.supermarketId}')`
+  )
+  const query = sql.raw(`
+      SELECT name, supermarket_id, valid_from, valid_until
+      FROM products
+      WHERE (name, supermarket_id) IN (${whereClauses.join(',')})
+  `)
+  const result = await db.execute(query)
+  const p = result.rows.map((r) => {
+    return {
+      name: r.name as string,
+      supermarketId: r.supermarket_id as string,
+      validFrom: r.valid_from as string,
+      validUntil: r.valid_until as string,
+    }
+  })
+
+  return { products: p }
+}
+
 export const searchProductsByMatchingName = async (matcher: string) => {
   const rows = await db
     .select({ product: products, supermarket: supermarkets })

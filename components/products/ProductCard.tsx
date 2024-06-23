@@ -60,33 +60,30 @@ export const ProductCard = ({
             className='h-64 w-full object-scale-down rounded-lg'
           />
         </Link>
+        {product.oldPrice && product.price && (
+          <div className='absolute top-2 left-2 rounded-full bg-accent px-3 py-[0.375rem]'>
+            <p className='text-xs font-medium leading-none'>
+              {`- ${Math.round((product.oldPrice / product.price) * 100)}%`}
+            </p>
+          </div>
+        )}
         <div className='absolute top-2 right-2 rounded-full bg-secondary px-3 py-[0.375rem]'>
           <p className='text-xs font-medium leading-none'>
-            {product.validUntil && `Ends in ${calculatePromotionDays} days`} in{' '}
-            {product.supermarket?.name}
+            {product.validUntil &&
+              `Ends in ${calculatePromotionDays} day${calculatePromotionDays > 1 ? 's' : ''}`}{' '}
+            in {product.supermarket?.name}
           </p>
         </div>
       </div>
 
-      <CardHeader className='p-4 text-center lg:text-left max-w-[310px]'>
-        <CardTitle className='text-xl'>
-          <TooltipProvider>
-            <Tooltip delayDuration={200}>
-              <TooltipTrigger className='max-w-full truncate'>
-                {product.name}
-              </TooltipTrigger>
-              <TooltipContent align='start' alignOffset={-4} sideOffset={6}>
-                {product.name}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </CardTitle>
+      <CardHeader className='p-4 text-center lg:text-left '>
+        <CardTitle className='text-xl truncate w-full'>{product.name}</CardTitle>
 
         <CardDescription className='truncate'>{product.category}</CardDescription>
       </CardHeader>
 
       <CardFooter className='flex flex-col items-center gap-2 py-[0.75rem] px-4 border-t-[1px]'>
-        <div className='flex w-full items-center gap-2 py-1'>
+        <div className='flex w-full items-center gap-2'>
           {product.oldPrice && (
             <p className='text-sm line-through font-light text-slate-400'>
               {product.oldPrice} лв.
