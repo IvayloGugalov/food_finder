@@ -10,6 +10,14 @@ on:
   push:
     branches: "**"
 
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  DATABASE_APP_LOGS_URL: ${{ secrets.DATABASE_APP_LOGS_URL }}
+  PRODUCTS_API: ${{ secrets.PRODUCTS_API }}
+  MY_EMAIL: ${{ secrets.MY_EMAIL }}
+  RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+  EDGE_CONFIG: ${{ secrets.EDGE_CONFIG }}
+
 jobs:
   lint:
     runs-on: ubuntu-latest
