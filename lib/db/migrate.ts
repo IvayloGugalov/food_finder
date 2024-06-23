@@ -12,7 +12,6 @@ const runMigrate = async (migrationsFolder: string, databaseUrl?: string) => {
   neonConfig.fetchConnectionCache = true
 
   const sql = neon(databaseUrl)
-  // @ts-expect-error -
   const database = drizzle(sql)
 
   console.log('⏳ Running migrations...')

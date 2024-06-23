@@ -14,7 +14,7 @@ import {
 } from '@/lib/db/schema/products'
 
 import { createProductPriceHistory } from '@/lib/api/productPriceHistory/mutations'
-import { getProductByName } from './queries'
+import { getProductByName, getProductsBasedOnNewProductsToInsert as getExistingProducts } from './queries'
 import {
   insertProductCreateLogSchema,
   productCreateLog,
@@ -44,9 +44,9 @@ export const createProduct = async (product: NewProductParams) => {
     const error = error_ as NeonDbError
     const errorCode = error.code
     // duplicate key value violates unique constraint
-    if (errorCode === DUPLICATE_UNIQUE_CONSTRAIN_ERROR_CODE) {
-      return await createProductAndPriceHistory(newProduct)
-    }
+    // if (errorCode === DUPLICATE_UNIQUE_CONSTRAIN_ERROR_CODE) {
+    //   return await createProductAndPriceHistory(newProduct)
+    // }
     const errorMessage = error.message ?? 'Error, please try again'
 
     // const insertProductCreateLog = insertProductCreateLogSchema.parse({
@@ -67,10 +67,16 @@ const createProductAndPriceHistory = async (newProduct: NewProductType) => {
     throw { error: `Could not find product with the name ${newProduct.name}!` }
   }
 
+  if (newProduct.validFrom === product.validFrom) {
+    throw {
+      error: `Product ${newProduct.name} has already been added for ${newProduct.validFrom} - ${newProduct.validUntil} week!`,
+    }
+  }
+
   await createProductPriceHistory({
-    price: newProduct.price,
+    price: product.price,
     productId: product.id,
-    oldPrice: product.price,
+    oldPrice: product.oldPrice!,
     weekDayStart: new Date(newProduct.validFrom!),
     weekDayEnd: new Date(newProduct.validUntil!),
   })
@@ -85,11 +91,23 @@ const createProductAndPriceHistory = async (newProduct: NewProductType) => {
 }
 
 export const createProducts = async (productsToInsert: NewProductParams[]) => {
-  const newProducts = productsToInsert.map((product) =>
+  const { filteredProductsToUpdate, filteredProductsToInsert } =
+    await filterProductsForInsertAndUpdate(productsToInsert)
+
+  filteredProductsToUpdate.forEach(async (p) => {
+    createProductAndPriceHistory(p).catch((error) => {
+      console.error(`Error updating product ${p.name}:`, error)
+    })
+  })
+  const newProducts = filteredProductsToInsert.map((product) =>
     insertProductSchema.parse(product)
   )
+
   try {
-    await db.insert(products).values(newProducts).onConflictDoNothing()
+    await db.insert(products)
+      .values(newProducts)
+      // The cobnflicts should be handled by the filterProductsForInsertAndUpdate function
+      .onConflictDoNothing()
   } catch (error) {
     const message = (error as Error).message ?? 'Error, please try again'
     console.error(message)
@@ -127,4 +145,54 @@ export const deleteProduct = async (id: ProductId) => {
     console.error(message)
     throw { error: message }
   }
+}
+
+const createUniqueProductName = (product: NewProductParams) => {
+  const validFromFormatted =
+    product.validFrom &&
+    new Date(product.validFrom).toLocaleDateString('en-GB').replaceAll('/', '-')
+  const validUntilFormatted =
+    product.validUntil &&
+    new Date(product.validUntil).toLocaleDateString('en-GB').replaceAll('/', '-')
+  return `${product.name} (${validFromFormatted} - ${validUntilFormatted})`
+}
+
+async function filterProductsForInsertAndUpdate(
+  productsToInsert: {
+    name: string
+    quantity: string | null
+    price: number
+    oldPrice: number
+    category: string | null
+    picUrl: string | null
+    validFrom: string | null
+    validUntil: string | null
+    supermarketId: string
+  }[]
+) {
+  const { products: existingProducts } = await getExistingProducts(
+    productsToInsert.map((p) => ({ name: p.name, supermarketId: p.supermarketId }))
+  )
+
+  const filteredProductsToInsert: NewProductParams[] = []
+  const filteredProductsToUpdate: NewProductParams[] = []
+  productsToInsert.forEach((p) => {
+    const existingProduct = existingProducts.find(
+      (e) => e.name === p.name && e.supermarketId === p.supermarketId
+    )
+
+    if (!existingProduct) {
+      filteredProductsToInsert.push(p)
+    } else if (
+      existingProduct &&
+      !!p.validFrom &&
+      existingProduct.validFrom < p.validFrom &&
+      !!p.validUntil &&
+      existingProduct.validUntil < p.validUntil
+    ) {
+      const uniqueProductName = createUniqueProductName(p)
+      filteredProductsToInsert.push({ ...p, name: uniqueProductName })
+    }
+  })
+  return { filteredProductsToUpdate, filteredProductsToInsert }
 }
